@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.allmsi.mis.dao.FlowModuleMapper">
+	<resultMap id="BaseResultMap"
+		type="com.allmsi.mis.model.po.FlowModule">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="flowCode" property="flowCode"
+			jdbcType="VARCHAR" />
+		<result column="module" property="module" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, flowCode, module
+	</sql>
+	<select id="selectFlowCode" parameterType="java.lang.String"
+		resultType="java.lang.String">
+		select flowCode from im_tp_flow_module where
+		module=#{module,jdbcType=VARCHAR}
+	</select>
+	<select id="selectModule" parameterType="java.lang.String"
+		resultType="java.lang.String">
+		select module from im_tp_flow_module where
+		flowCode=#{flowCode,jdbcType=VARCHAR}
+	</select>
+	<select id="selectModuleByFlowCodes" resultMap="BaseResultMap"
+		parameterType="java.util.List" >
+		select flowCode,module from im_tp_flow_module where flowCode in
+		<foreach collection="list" index="index" item="item" open="("
+			separator="," close=")">
+			#{item}
+		</foreach>
+	</select>
+</mapper>

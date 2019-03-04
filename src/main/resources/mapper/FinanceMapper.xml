@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.allmsi.mis.dao.FinanceMapper">
+	<resultMap id="BaseResultMap"
+		type="com.allmsi.mis.model.po.Finance">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="projId" property="projId" jdbcType="VARCHAR" />
+		<result column="finTime" property="finTime"
+			jdbcType="VARCHAR" />
+		<result column="bizId" property="bizId" jdbcType="VARCHAR" />
+		<result column="detail" property="detail" jdbcType="VARCHAR" />
+		<result column="finUserId" property="finUserId"
+			jdbcType="VARCHAR" />
+		<result column="finUserName" property="finUserName"
+			jdbcType="VARCHAR" />
+		<result column="finUserDept" property="finUserDept"
+			jdbcType="VARCHAR" />
+		<result column="finUserDeptName" property="finUserDeptName"
+			jdbcType="VARCHAR" />
+		<result column="contTotalAmount" property="contTotalAmount"
+			jdbcType="INTEGER" />
+		<result column="ourAmount" property="ourAmount"
+			jdbcType="INTEGER" />
+		<result column="note" property="note" jdbcType="VARCHAR" />
+		<result column="causeOf" property="causeOf" jdbcType="VARCHAR" />
+		<result column="increaseAmount" property="increaseAmount"
+			jdbcType="INTEGER" />
+		<result column="cTime" property="cTime" jdbcType="TIMESTAMP" />
+		<result column="cUserId" property="cUserId" jdbcType="VARCHAR" />
+		<result column="uTime" property="uTime" jdbcType="TIMESTAMP" />
+		<result column="uUserId" property="uUserId" jdbcType="VARCHAR" />
+		<result column="del" property="del" jdbcType="INTEGER" />
+		<result column="finName" property="finName" jdbcType="VARCHAR" />
+		<result column="isFin" property="isFin" jdbcType="INTEGER" />
+		<result column="contDetail" property="contDetail"
+			jdbcType="VARCHAR" />
+		<result column="partner" property="partner" jdbcType="VARCHAR" />
+		<result column="contractModel" property="contractModel"
+			jdbcType="VARCHAR" />
+		<result column="draft" property="draft" jdbcType="INTEGER" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		f.id, f.projId, f.finTime, f.bizId, f.detail,
+		f.finUserId,
+		f.finUserName,
+		f.finUserDept, f.finUserDeptName,
+		f.contTotalAmount,
+		f.ourAmount, f.note, f.causeOf, f.increaseAmount,
+		f.cTime, f.cUserId,
+		f.uTime,
+		f.uUserId,r.payType,d.dName as
+		payTypeName, f.finName, f.isFin,
+		f.contDetail,
+		f.partner,
+		f.contractModel,f.draft
+	</sql>
+	<sql id="Simple_Column_List">
+		f.id, f.projId, f.finTime, f.bizId, f.detail,
+		f.finUserId,
+		f.finUserName,
+		f.finUserDept, f.finUserDeptName,
+		f.contTotalAmount,
+		f.ourAmount, f.note, f.causeOf, f.increaseAmount,
+		f.cTime, f.cUserId,
+		f.uTime,
+		f.uUserId,f.draft,r.payType as payType ,d.dName as payTypeName
+	</sql>
+	<select id="draft" resultMap="BaseResultMap"
+		parameterType="java.util.Map">
+		select a.id,p.projName as projName,c.contTitle as
+		contTitle,
+		a.finUserDeptName,a.finUserDept,a.cTime,
+		a.finUserId,a.finUserName,a.finTime,a.finName
+		from
+		im_tm_finance a
+		left join im_tm_project p on a.projId = p.projId and p.del = 0
+		left join
+		im_tm_finance_contract fc on a.id = fc.finId and fc.del = 0
+		left join
+		im_tm_contract c on c.id = fc.contId and c.del = 0
+		LEFT JOIN
+		im_tc_data_user
+		du on a.id = du.objId
+		where a.draft = 0 and a.del = 0 and
+		du.userId=#{cUserId,jdbcType=VARCHAR} and du.type='01'
+		<if test="search != '' and search != null">
+			and a.finName like concat ('%'search'%')
+		</if>
+		order by a.cTime desc
+	</select>
+	<select id="selectListByProjId" resultMap="BaseResultMap">
+		select f.id, f.finName from im_tm_finance f where f.del = 0 and f.draft = 1
+	</select>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Simple_Column_List" />
+		from im_tm_finance f left join im_tm_finance_related r on f.id =
+		r.finId and r.del = 0
+		left join im_tm_dict d on r.payType = d.id and
+		d.del = 0
+		where f.id = #{id,jdbcType=VARCHAR} and f.del = 0
+	</select>
+	<select id="selectByProjId" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Simple_Column_List" />
+		from im_tm_finance f left join im_tm_finance_related r on f.id =
+		r.finId and r.del = 0
+		left join im_tm_dict d on r.payType = d.id and
+		d.del = 0
+		where f.projId = #{projId,jdbcType=VARCHAR} and f.del = 0 and f.draft = 1
+		order by cTime
+	</select>
+	<select id="selectByIds" parameterType="java.util.List"
+		resultMap="BaseResultMap">
+		select finUserId, finUserName,
+		finUserDept, finUserDeptName from
+		im_tm_finance
+		where id in
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			item = #{item}
+		</foreach>
+		order by cTime desc
+	</select>
+	<select id="selectByContId" parameterType="java.lang.String" resultMap="BaseResultMap">
+		select
+		f.id,f.finName
+		from im_tm_finance_contract fc left join im_tm_finance f on fc.finId =
+		f.id and f.del = 0
+		where fc.contId = #{contId} and fc.del = 0
+	</select>
+	<update id="deleteByPrimaryKey" parameterType="java.lang.String">
+		update
+		im_tm_finance set del = 1,uTime = now()
+		where id =
+		#{id,jdbcType=VARCHAR}
+	</update>
+	<insert id="insertSelective"
+		parameterType="com.allmsi.mis.model.po.Finance">
+		insert into im_tm_finance
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="projId != null">
+				projId,
+			</if>
+			<if test="finTime != null">
+				finTime,
+			</if>
+			<if test="bizId != null">
+				bizId,
+			</if>
+			<if test="detail != null">
+				detail,
+			</if>
+			<if test="finUserId != null">
+				finUserId,
+			</if>
+			<if test="finUserName != null">
+				finUserName,
+			</if>
+			<if test="finUserDept != null">
+				finUserDept,
+			</if>
+			<if test="finUserDeptName != null">
+				finUserDeptName,
+			</if>
+			<if test="contTotalAmount != null">
+				contTotalAmount,
+			</if>
+			<if test="ourAmount != null">
+				ourAmount,
+			</if>
+			<if test="note != null">
+				note,
+			</if>
+			<if test="causeOf != null">
+				causeOf,
+			</if>
+			<if test="increaseAmount != null">
+				increaseAmount,
+			</if>
+			<if test="cUserId != null">
+				cUserId,
+			</if>
+			<if test="uTime != null">
+				uTime,
+			</if>
+			<if test="uUserId != null">
+				uUserId,
+			</if>
+			<if test="finName != null">
+				finName,
+			</if>
+			<if test="isFin != null">
+				isFin,
+			</if>
+			<if test="contDetail != null">
+				contDetail,
+			</if>
+			<if test="partner != null">
+				partner,
+			</if>
+			<if test="contractModel != null">
+				contractModel,
+			</if>
+			<if test="draft != null">
+				draft,
+			</if>
+			cTime, del
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=VARCHAR},
+			</if>
+			<if test="projId != null">
+				#{projId,jdbcType=VARCHAR},
+			</if>
+			<if test="finTime != null">
+				#{finTime,jdbcType=VARCHAR},
+			</if>
+			<if test="bizId != null">
+				#{bizId,jdbcType=VARCHAR},
+			</if>
+			<if test="detail != null">
+				#{detail,jdbcType=VARCHAR},
+			</if>
+			<if test="finUserId != null">
+				#{finUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="finUserName != null">
+				#{finUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="finUserDept != null">
+				#{finUserDept,jdbcType=VARCHAR},
+			</if>
+			<if test="finUserDeptName != null">
+				#{finUserDeptName,jdbcType=VARCHAR},
+			</if>
+			<if test="contTotalAmount != null">
+				#{contTotalAmount,jdbcType=INTEGER},
+			</if>
+			<if test="ourAmount != null">
+				#{ourAmount,jdbcType=INTEGER},
+			</if>
+			<if test="note != null">
+				#{note,jdbcType=VARCHAR},
+			</if>
+			<if test="causeOf != null">
+				#{causeOf,jdbcType=VARCHAR},
+			</if>
+			<if test="increaseAmount != null">
+				#{increaseAmount,jdbcType=INTEGER},
+			</if>
+			<if test="cUserId != null">
+				#{cUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="uTime != null">
+				#{uTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="uUserId != null">
+				#{uUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="finName != null">
+				#{finName,jdbcType=VARCHAR},
+			</if>
+			<if test="isFin != null">
+				#{isFin,jdbcType=INTEGER},
+			</if>
+			<if test="contDetail != null">
+				#{contDetail,jdbcType=VARCHAR},
+			</if>
+			<if test="partner != null">
+				#{partner,jdbcType=VARCHAR},
+			</if>
+			<if test="contractModel != null">
+				#{contractModel,jdbcType=VARCHAR},
+			</if>
+			<if test="draft != null">
+				#{draft,jdbcType=VARCHAR},
+			</if>
+			now(),0
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.allmsi.mis.model.po.Finance">
+		update im_tm_finance
+		<set>
+			<if test="proId != null">
+				projId = #{projId,jdbcType=VARCHAR},
+			</if>
+			<if test="finTime != null">
+				finTime = #{finTime,jdbcType=VARCHAR},
+			</if>
+			<if test="busId != null">
+				bizId = #{bizId,jdbcType=VARCHAR},
+			</if>
+			<if test="detail != null">
+				detail = #{detail,jdbcType=VARCHAR},
+			</if>
+			<if test="finUserId != null">
+				finUserId = #{finUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="finUserName != null">
+				finUserName = #{finUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="finUserDept != null">
+				finUserDept = #{finUserDept,jdbcType=VARCHAR},
+			</if>
+			<if test="finUserDeptName != null">
+				finUserDeptName = #{finUserDeptName,jdbcType=VARCHAR},
+			</if>
+			<if test="conTotalAmount != null">
+				contTotalAmount = #{contTotalAmount,jdbcType=INTEGER},
+			</if>
+			<if test="ourAmount != null">
+				ourAmount = #{ourAmount,jdbcType=INTEGER},
+			</if>
+			<if test="note != null">
+				note = #{note,jdbcType=VARCHAR},
+			</if>
+			<if test="causeOf != null">
+				causeOf = #{causeOf,jdbcType=VARCHAR},
+			</if>
+			<if test="increaseAmount != null">
+				increaseAmount = #{increaseAmount,jdbcType=INTEGER},
+			</if>
+			<if test="cTime != null">
+				cTime = #{cTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="cUserId != null">
+				cUserId = #{cUserId,jdbcType=VARCHAR},
+			</if>
+			uTime = now(),
+			<if test="uUserId != null">
+				uUserId = #{uUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="del != null">
+				del = #{del,jdbcType=INTEGER},
+			</if>
+			<if test="finName != null">
+				finName = #{finName,jdbcType=VARCHAR},
+			</if>
+			<if test="isFin != null">
+				isFin = #{isFin,jdbcType=INTEGER},
+			</if>
+			<if test="contDetail != null">
+				contDetail = #{contDetail,jdbcType=VARCHAR},
+			</if>
+			<if test="partner != null">
+				partner = #{partner,jdbcType=VARCHAR},
+			</if>
+			<if test="contractModel != null">
+				contractModel = #{contractModel,jdbcType=VARCHAR},
+			</if>
+			<if test="draft != null">
+				draft = #{draft,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+	<select id="financeList" parameterType="java.util.Map"
+		resultMap="BaseResultMap">
+		select f.id,
+		f.finName,f.finTime
+		from im_tm_finance f
+		where f.del = 0
+		<if test="finName != '' and finName != null">
+			and f.finName like concat ('%',#{finName},'%')
+		</if>
+		<if test="finUserDeptName != '' and finUserDeptName != null">
+			and f.finUserDeptName like concat
+			('%',#{finUserDeptName},'%')
+		</if>
+		<if test="finUserName != '' and finUserName != null">
+			and f.finUserName like concat ('%',#{finUserName},'%')
+		</if>
+		<if test="finTime != '' and finTime != null">
+			and f.DATE_FORMAT(f.finTime,'%Y%m%d') = #{finTime}
+		</if>
+		order by f.cTime desc
+	</select>
+</mapper>

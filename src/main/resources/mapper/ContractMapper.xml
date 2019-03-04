@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.allmsi.mis.dao.ContractMapper">
+	<resultMap id="BaseResultMap"
+		type="com.allmsi.mis.model.po.Contract">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="contTitle" property="contTitle"
+			jdbcType="VARCHAR" />
+		<result column="contUserId" property="contUserId"
+			jdbcType="VARCHAR" />
+		<result column="contUserName" property="contUserName"
+			jdbcType="VARCHAR" />
+		<result column="contUserDeptId" property="contUserDeptId"
+			jdbcType="VARCHAR" />
+		<result column="contUserDeptName" property="contUserDeptName"
+			jdbcType="VARCHAR" />
+		<result column="contDetail" property="contDetail"
+			jdbcType="VARCHAR" />
+		<result column="contType" property="contType"
+			jdbcType="VARCHAR" />
+		<result column="contNo" property="contNo" jdbcType="INTEGER" />
+		<result column="totalAmount" property="totalAmount"
+			jdbcType="DECIMAL" />
+		<result column="projId" property="projId" jdbcType="VARCHAR" />
+		<result column="bizId" property="bizId" jdbcType="VARCHAR" />
+		<result column="ourCompanyId" property="ourCompanyId"
+			jdbcType="VARCHAR" />
+		<result column="cTime" property="cTime" jdbcType="TIMESTAMP" />
+		<result column="cUserId" property="cUserId" jdbcType="VARCHAR" />
+		<result column="uTime" property="uTime" jdbcType="TIMESTAMP" />
+		<result column="uUserId" property="uUserId" jdbcType="VARCHAR" />
+		<result column="del" property="del" jdbcType="INTEGER" />
+		<result column="projName" property="projName"
+			jdbcType="VARCHAR" />
+		<result column="projShare" property="projShare"
+			jdbcType="VARCHAR" />
+		<result column="projShareValue" property="projShareValue"
+			jdbcType="INTEGER" />
+		<result column="isBiz" property="isBiz" jdbcType="INTEGER" />
+		<result column="dateofApplication" property="dateofApplication"
+			jdbcType="VARCHAR" />
+		<result column="dateofSigning" property="dateofSigning"
+			jdbcType="VARCHAR" />
+		<result column="draft" property="draft" jdbcType="INTEGER" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		c.id, c.contTitle, c.contUserId, c.contUserName, c.contUserDeptId,
+		c.contUserDeptName, c.contDetail,
+		c.contType,d.dName as contTypeName, c.contNo, c.totalAmount, c.projId,
+		c.bizId, c.ourCompanyId,e.dName as ourCompanyName, c.cTime, c.cUserId,
+		c.uTime,
+		c.uUserId, c.del, c.projName,
+		c.projShare, c.projShareValue, c.isBiz, c.dateofApplication,
+		c.dateofSigning,c.draft
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from im_tm_contract c left join 
+		im_tm_dict d on c.contType = d.id and d.del = 0
+		left join im_tm_dict e on c.ourCompanyId = e.id and e.del = 0
+		where c.id = #{id,jdbcType=VARCHAR} and c.del = 0
+	</select>
+	<select id="selectByProjId" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from im_tm_contract c left join 
+		im_tm_dict d on c.contType = d.id and d.del = 0
+		left join im_tm_dict e on c.ourCompanyId = e.id and e.del = 0
+		where projId = #{projId,jdbcType=VARCHAR} and c.del =
+		0
+		order by cTime
+	</select>
+	<select id="selectByFin" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select  fc.contId as id,c.contTitle  from im_tm_finance_contract fc
+		INNER JOIN im_tm_contract c ON fc.contId = c.id AND c.del=0
+		WHERE fc.finId=#{finId,jdbcType=VARCHAR} AND fc.del=0
+		order by fc.cTime desc
+	</select>
+	<select id="draft" resultMap="BaseResultMap"
+		parameterType="java.util.Map">
+		select c.id,c.contTitle,c.totalAmount,c.cTime
+		from im_tm_contract c
+		LEFT JOIN im_tc_data_user
+		du on c.id = du.objId
+		WHERE c.draft = 0 and
+		c.del=0 and 
+		du.userId=#{cUserId,jdbcType=VARCHAR} and du.type='01'
+		<if test="search != '' and search != null">
+			and c.contTitle like concat ('%'search'%')
+		</if>
+		order by c.cTime desc
+	</select>
+
+	<select id="selectContractList" resultMap="BaseResultMap"
+		parameterType="java.util.Map">
+		select
+		c.contTitle,c.totalAmount,c.contUserDeptName,c.cTime
+		from
+		im_tm_contract c
+		where del = 0 and c.projId = #{projId}
+		<if test="contTitle != '' and contTitle != null">
+			and c.contTitle like concat ('%',#{contTitle},'%')
+		</if>
+		<if test="cTime != '' and cTime != null">
+			and DATE_FORMAT(c.cTime,'%Y%m%d') = #{cTime}
+		</if>
+		order by c.cTime desc
+	</select>
+	<select id="selectByIds" parameterType="java.util.List" resultMap="BaseResultMap">
+		select  contUserId, contUserName, contUserDeptId,
+		contUserDeptName
+		from im_tm_contract where id in 
+		<foreach collection="list" index="index"  item="item" open="(" close=")" separator=",">
+			item = #{item}
+		</foreach>
+		order by cTime desc
+	</select>
+	<update id="deleteByPrimaryKey" parameterType="java.lang.String">
+		update
+		im_tm_contract set del = 1,uTime = now()
+		where id =
+		#{id,jdbcType=VARCHAR}
+	</update>
+	<insert id="insertSelective"
+		parameterType="com.allmsi.mis.model.po.Contract">
+		insert into im_tm_contract
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="contTitle != null">
+				contTitle,
+			</if>
+			<if test="contUserId != null">
+				contUserId,
+			</if>
+			<if test="contUserName != null">
+				contUserName,
+			</if>
+			<if test="contUserDeptId != null">
+				contUserDeptId,
+			</if>
+			<if test="contUserDeptName != null">
+				contUserDeptName,
+			</if>
+			<if test="contDetail != null">
+				contDetail,
+			</if>
+			<if test="contType != null">
+				contType,
+			</if>
+			<if test="contNo != null">
+				contNo,
+			</if>
+			<if test="totalAmount != null">
+				totalAmount,
+			</if>
+			<if test="projId != null">
+				projId,
+			</if>
+			<if test="bizId != null">
+				bizId,
+			</if>
+			<if test="ourCompanyId != null">
+				ourCompanyId,
+			</if>
+			<if test="cUserId != null">
+				cUserId,
+			</if>
+			<if test="uTime != null">
+				uTime,
+			</if>
+			<if test="uUserId != null">
+				uUserId,
+			</if>
+			<if test="projName != null">
+				projName,
+			</if>
+			<if test="projShare != null">
+				projShare,
+			</if>
+			<if test="projShareValue != null">
+				projShareValue,
+			</if>
+			<if test="isBiz != null">
+				isBiz,
+			</if>
+			<if test="dateofApplication != null">
+				dateofApplication,
+			</if>
+			<if test="dateofSigning != null">
+				dateofSigning,
+			</if>
+			<if test="draft != null">
+				draft,
+			</if>
+			cTime,del
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=VARCHAR},
+			</if>
+			<if test="contTitle != null">
+				#{contTitle,jdbcType=VARCHAR},
+			</if>
+			<if test="contUserId != null">
+				#{contUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="contUserName != null">
+				#{contUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="contUserDeptId != null">
+				#{contUserDeptId,jdbcType=VARCHAR},
+			</if>
+			<if test="contUserDeptName != null">
+				#{contUserDeptName,jdbcType=VARCHAR},
+			</if>
+			<if test="contDetail != null">
+				#{contDetail,jdbcType=VARCHAR},
+			</if>
+			<if test="contType != null">
+				#{contType,jdbcType=VARCHAR},
+			</if>
+			<if test="contNo != null">
+				#{contNo,jdbcType=INTEGER},
+			</if>
+			<if test="totalAmount != null">
+				#{totalAmount,jdbcType=DECIMAL},
+			</if>
+			<if test="projId != null">
+				#{projId,jdbcType=VARCHAR},
+			</if>
+			<if test="bizId != null">
+				#{bizId,jdbcType=VARCHAR},
+			</if>
+			<if test="ourCompanyId != null">
+				#{ourCompanyId,jdbcType=VARCHAR},
+			</if>
+			<if test="cUserId != null">
+				#{cUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="uTime != null">
+				#{uTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="uUserId != null">
+				#{uUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="projName != null">
+				#{projName,jdbcType=VARCHAR},
+			</if>
+			<if test="projShare != null">
+				#{projShare,jdbcType=VARCHAR},
+			</if>
+			<if test="projShareValue != null">
+				#{projShareValue,jdbcType=INTEGER},
+			</if>
+			<if test="isBiz != null">
+				#{isBiz,jdbcType=INTEGER},
+			</if>
+			<if test="dateofApplication != null">
+				#{dateofApplication,jdbcType=VARCHAR},
+			</if>
+			<if test="dateofSigning != null">
+				#{dateofSigning,jdbcType=VARCHAR},
+			</if>
+			<if test="draft != null">
+				#{draft,jdbcType=TIMESTAMP},
+			</if>
+			now(),0
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.allmsi.mis.model.po.Contract">
+		update im_tm_contract
+		<set>
+			<if test="contTitle != null">
+				contTitle = #{contTitle,jdbcType=VARCHAR},
+			</if>
+			<if test="contUserId != null">
+				contUserId = #{contUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="contUserName != null">
+				contUserName = #{contUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="contUserDeptId != null">
+				contUserDeptId = #{contUserDeptId,jdbcType=VARCHAR},
+			</if>
+			<if test="contUserDeptName != null">
+				contUserDeptName = #{contUserDeptName,jdbcType=VARCHAR},
+			</if>
+			<if test="contDetail != null">
+				contDetail = #{contDetail,jdbcType=VARCHAR},
+			</if>
+			<if test="contType != null">
+				contType = #{contType,jdbcType=VARCHAR},
+			</if>
+			<if test="contNo != null">
+				contNo = #{contNo,jdbcType=INTEGER},
+			</if>
+			<if test="totalAmount != null">
+				totalAmount = #{totalAmount,jdbcType=DECIMAL},
+			</if>
+			<if test="projId != null">
+				projId = #{projId,jdbcType=VARCHAR},
+			</if>
+			<if test="bizId != null">
+				bizId = #{bizId,jdbcType=VARCHAR},
+			</if>
+			<if test="ourCompanyId != null">
+				ourCompanyId = #{ourCompanyId,jdbcType=VARCHAR},
+			</if>
+			<if test="cTime != null">
+				cTime = #{cTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="cUserId != null">
+				cUserId = #{cUserId,jdbcType=VARCHAR},
+			</if>
+			uTime = now(),
+			<if test="uUserId != null">
+				uUserId = #{uUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="del != null">
+				del = #{del,jdbcType=INTEGER},
+			</if>
+			<if test="projName != null">
+				projName = #{projName,jdbcType=VARCHAR},
+			</if>
+			<if test="projShare != null">
+				projShare = #{projShare,jdbcType=VARCHAR},
+			</if>
+			<if test="projShareValue != null">
+				projShareValue = #{projShareValue,jdbcType=INTEGER},
+			</if>
+			<if test="isBiz != null">
+				isBiz = #{isBiz,jdbcType=INTEGER},
+			</if>
+			<if test="dateofApplication != null">
+				dateofApplication =
+				#{dateofApplication,jdbcType=VARCHAR},
+			</if>
+			<if test="dateofSigning != null">
+				dateofSigning = #{dateofSigning,jdbcType=VARCHAR},
+			</if>
+			<if test="draft != null">
+				draft = #{draft,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+</mapper>

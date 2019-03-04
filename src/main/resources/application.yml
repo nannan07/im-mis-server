@@ -1,0 +1,63 @@
+server:
+  port: 8086 #配置程序端口，默认为8080
+  context-path: /mis # 配置默认访问路径
+eureka: 
+  client: 
+    serviceUrl: 
+      defaultZone:  http://47.105.38.33:8082/eureka/
+  instance:
+    preferIpAddress: true
+    instance-id: ${spring.cloud.client.ipAddress}:${server.port}
+  
+im:
+  session:
+    out: 3600 #session out time
+  user:
+    default:
+      psw: 1234 #用户的默认密码
+  cache: redis      #Cache configuration item,可选缓存map,redis,默认map,严格匹配
+  redis:
+    cache: com.allmsi.cache.redis.RedisCache  #redis实现类
+    
+spring:
+  application: 
+    name: mis-server-dev1
+  datasource:
+    url: jdbc:mysql://47.105.38.33:3306/im_mis_server_dev?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&useSSL=false
+    username: im01
+    password: im123456
+    driver-class-name: com.mysql.jdbc.Driver
+  redis:
+    database: 4
+    host: 47.105.38.33
+    port: 6379
+    password: im123456
+    timeout: 5000
+    pool:
+      max-active: 8
+      max-wait: -1
+      max-idle: 8
+      min-idle: 0
+  cloud: 
+    loadbalancer: 
+      retry: 
+        enabled: true
+mybatis:
+  mapperLocations: classpath:mapper/*.xml
+  typeAliasesPackage: com.allmsi.mis.model.po
+  
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql
+hystrix: 
+   command: 
+     default: 
+       execution:  
+       isolation: 
+         thread: 
+           timeoutInMilliseconds: 6000
+ribbon: 
+  ReadTimeout: 60000 #请求处理的超时时间
+  ConnectTimeout: 60000 #请求连接的超时时间

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.allmsi.mis.dao.DictMapper" >
+  <resultMap id="BaseResultMap" type="com.allmsi.mis.model.po.Dict" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="dType" property="dType" jdbcType="VARCHAR" />
+    <result column="dName" property="dName" jdbcType="VARCHAR" />
+    <result column="dSort" property="dSort" jdbcType="INTEGER" />
+    <result column="parentId" property="parentId" jdbcType="VARCHAR" />
+    <result column="del" property="del" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, dType, dName, dSort, parentId, del
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from im_tm_dict
+    where id = #{id,jdbcType=VARCHAR} and del = 0
+  </select>
+   <select id="selectByName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from im_tm_dict
+    where dCode = #{dCode,jdbcType=VARCHAR} and del = 0
+    order by dSort
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from im_tm_dict
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.allmsi.mis.model.po.Dict" >
+    insert into im_tm_dict (id, dType, dName, 
+      dSort, parentId, del
+      )
+    values (#{id,jdbcType=VARCHAR}, #{dType,jdbcType=VARCHAR}, #{dName,jdbcType=VARCHAR}, 
+      #{dSort,jdbcType=INTEGER}, #{parentId,jdbcType=VARCHAR}, #{del,jdbcType=INTEGER}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.allmsi.mis.model.po.Dict" >
+    insert into im_tm_dict
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="dType != null" >
+        dType,
+      </if>
+      <if test="dName != null" >
+        dName,
+      </if>
+      <if test="dSort != null" >
+        dSort,
+      </if>
+      <if test="parentId != null" >
+        parentId,
+      </if>
+      <if test="del != null" >
+        del,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="dType != null" >
+        #{dType,jdbcType=VARCHAR},
+      </if>
+      <if test="dName != null" >
+        #{dName,jdbcType=VARCHAR},
+      </if>
+      <if test="dSort != null" >
+        #{dSort,jdbcType=INTEGER},
+      </if>
+      <if test="parentId != null" >
+        #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="del != null" >
+        #{del,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.allmsi.mis.model.po.Dict" >
+    update im_tm_dict
+    <set >
+      <if test="dType != null" >
+        dType = #{dType,jdbcType=VARCHAR},
+      </if>
+      <if test="dName != null" >
+        dName = #{dName,jdbcType=VARCHAR},
+      </if>
+      <if test="dSort != null" >
+        dSort = #{dSort,jdbcType=INTEGER},
+      </if>
+      <if test="parentId != null" >
+        parentId = #{parentId,jdbcType=VARCHAR},
+      </if>
+      <if test="del != null" >
+        del = #{del,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.allmsi.mis.model.po.Dict" >
+    update im_tm_dict
+    set dType = #{dType,jdbcType=VARCHAR},
+      dName = #{dName,jdbcType=VARCHAR},
+      dSort = #{dSort,jdbcType=INTEGER},
+      parentId = #{parentId,jdbcType=VARCHAR},
+      del = #{del,jdbcType=INTEGER}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

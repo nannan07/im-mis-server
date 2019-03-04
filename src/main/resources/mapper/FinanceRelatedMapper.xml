@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.allmsi.mis.dao.FinanceRelatedMapper" >
+  <resultMap id="BaseResultMap" type="com.allmsi.mis.model.po.FinanceRelated" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="finId" property="finId" jdbcType="VARCHAR" />
+    <result column="projId" property="projId" jdbcType="VARCHAR" />
+    <result column="payType" property="payType" jdbcType="VARCHAR" />
+    <result column="payAmount" property="payAmount" jdbcType="INTEGER" />
+    <result column="payTime" property="payTime" jdbcType="TIMESTAMP" />
+    <result column="cTime" property="cTime" jdbcType="TIMESTAMP" />
+    <result column="cUserId" property="cUserId" jdbcType="VARCHAR" />
+    <result column="uTime" property="uTime" jdbcType="TIMESTAMP" />
+    <result column="uUserId" property="uUserId" jdbcType="VARCHAR" />
+    <result column="del" property="del" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, finId, projId, payType, payAmount, payTime, cTime, cUserId, uTime, uUserId, del
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from im_tm_finance_related
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    update im_tm_finance_related set del = 0,uUserId = #{uUserId,jdbcType=VARCHAR},uTime = now()
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.allmsi.mis.model.po.FinanceRelated" >
+    insert into im_tm_finance_related (id, finId, projId, 
+      payType, payAmount, payTime, 
+      cTime, cUserId, uTime, 
+      uUserId, del)
+    values (#{id,jdbcType=VARCHAR}, #{finId,jdbcType=VARCHAR}, #{projId,jdbcType=VARCHAR}, 
+      #{payType,jdbcType=VARCHAR}, #{payAmount,jdbcType=INTEGER}, #{payTime,jdbcType=TIMESTAMP}, 
+      #{cTime,jdbcType=TIMESTAMP}, #{cUserId,jdbcType=VARCHAR}, #{uTime,jdbcType=TIMESTAMP}, 
+      #{uUserId,jdbcType=VARCHAR}, #{del,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.allmsi.mis.model.po.FinanceRelated" >
+    insert into im_tm_finance_related
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="finId != null" >
+        finId,
+      </if>
+      <if test="projId != null" >
+        projId,
+      </if>
+      <if test="payType != null" >
+        payType,
+      </if>
+      <if test="payAmount != null" >
+        payAmount,
+      </if>
+      <if test="payTime != null" >
+        payTime,
+      </if>
+      <if test="cUserId != null" >
+        cUserId,
+      </if>
+      <if test="uTime != null" >
+        uTime,
+      </if>
+      <if test="uUserId != null" >
+        uUserId,
+      </if>
+         cTime,del
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="finId != null" >
+        #{finId,jdbcType=VARCHAR},
+      </if>
+      <if test="projId != null" >
+        #{projId,jdbcType=VARCHAR},
+      </if>
+      <if test="payType != null" >
+        #{payType,jdbcType=VARCHAR},
+      </if>
+      <if test="payAmount != null" >
+        #{payAmount,jdbcType=INTEGER},
+      </if>
+      <if test="payTime != null" >
+        #{payTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cUserId != null" >
+        #{cUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="uTime != null" >
+        #{uTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="uUserId != null" >
+        #{uUserId,jdbcType=VARCHAR},
+      </if>
+        now(),0
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.allmsi.mis.model.po.FinanceRelated" >
+    update im_tm_finance_related
+    <set >
+      <if test="finId != null" >
+        finId = #{finId,jdbcType=VARCHAR},
+      </if>
+      <if test="proId != null" >
+        projId = #{projId,jdbcType=VARCHAR},
+      </if>
+      <if test="payType != null" >
+        payType = #{payType,jdbcType=VARCHAR},
+      </if>
+      <if test="payAmount != null" >
+        payAmount = #{payAmount,jdbcType=INTEGER},
+      </if>
+      <if test="payTime != null" >
+        payTime = #{payTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cTime != null" >
+        cTime = #{cTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cUserId != null" >
+        cUserId = #{cUserId,jdbcType=VARCHAR},
+      </if>
+        uTime = now,
+      <if test="uUserId != null" >
+        uUserId = #{uUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="del != null" >
+        del = #{del,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.allmsi.mis.model.po.FinanceRelated" >
+    update im_tm_finance_related
+    set finId = #{finId,jdbcType=VARCHAR},
+      projId = #{projId,jdbcType=VARCHAR},
+      payType = #{payType,jdbcType=VARCHAR},
+      payAmount = #{payAmount,jdbcType=INTEGER},
+      payTime = #{payTime,jdbcType=TIMESTAMP},
+      cTime = #{cTime,jdbcType=TIMESTAMP},
+      cUserId = #{cUserId,jdbcType=INTEGER},
+      uTime = #{uTime,jdbcType=TIMESTAMP},
+      uUserId = #{uUserId,jdbcType=INTEGER},
+      del = #{del,jdbcType=INTEGER}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

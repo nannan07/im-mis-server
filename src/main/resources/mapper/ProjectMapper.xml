@@ -1,0 +1,614 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.allmsi.mis.dao.ProjectMapper">
+	<resultMap id="BaseResultMap"
+		type="com.allmsi.mis.model.po.Project">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="projId" property="projId" jdbcType="VARCHAR" />
+		<result column="projName" property="projName"
+			jdbcType="VARCHAR" />
+		<result column="projNo" property="projNo" jdbcType="VARCHAR" />
+		<result column="bizTime" property="bizTime"
+			jdbcType="TIMESTAMP" />
+		<result column="bizUserId" property="bizUserId"
+			jdbcType="VARCHAR" />
+		<result column="bizUserName" property="bizUserName"
+			jdbcType="VARCHAR" />
+		<result column="bizUserDeptId" property="bizUserDeptId"
+			jdbcType="VARCHAR" />
+		<result column="bizUserDeptName" property="bizUserDeptName"
+			jdbcType="VARCHAR" />
+		<result column="promotionUserId" property="promotionUserId"
+			jdbcType="VARCHAR" />
+		<result column="promotionUserName" property="promotionUserName"
+			jdbcType="VARCHAR" />
+		<result column="releaseManagerId" property="releaseManagerId"
+			jdbcType="VARCHAR" />
+		<result column="releaseManagerName"
+			property="releaseManagerName" jdbcType="VARCHAR" />
+		<result column="recordSituation" property="recordSituation"
+			jdbcType="VARCHAR" />
+		<result column="estimatedRating" property="estimatedRating"
+			jdbcType="VARCHAR" />
+		<result column="actualRating" property="actualRating"
+			jdbcType="VARCHAR" />
+		<result column="projType" property="projType"
+			jdbcType="VARCHAR" />
+		<result column="productType" property="productType"
+			jdbcType="VARCHAR" />
+		<result column="declareType" property="declareType"
+			jdbcType="VARCHAR" />
+		<result column="marketingType" property="marketingType"
+			jdbcType="VARCHAR" />
+		<result column="contentType" property="contentType"
+			jdbcType="VARCHAR" />
+		<result column="promotionDirection"
+			property="promotionDirection" jdbcType="VARCHAR" />
+		<result column="totalBudget" property="totalBudget"
+			jdbcType="INTEGER" />
+		<result column="totalExpenses" property="totalExpenses"
+			jdbcType="INTEGER" />
+		<result column="del" property="del" jdbcType="INTEGER" />
+		<result column="isEffective" property="isEffective"
+			jdbcType="INTEGER" />
+		<result column="cTime" property="cTime" jdbcType="TIMESTAMP" />
+		<result column="projectShare" property="projectShare"
+			jdbcType="INTEGER" />
+		<result column="contTitle" property="contTitle"
+			jdbcType="VARCHAR" />
+		<result column="contTime" property="contTime"
+			jdbcType="TIMESTAMP" />
+		<result column="contUserDeptId" property="contUserDeptId"
+			jdbcType="VARCHAR" />
+		<result column="contUserDeptName" property="contUserDeptName"
+			jdbcType="VARCHAR" />
+		<result column="contUserId" property="contUserId"
+			jdbcType="VARCHAR" />
+		<result column="contUserName" property="contUserName"
+			jdbcType="VARCHAR" />
+		<result column="finName" property="finName" jdbcType="VARCHAR" />
+		<result column="finTime" property="finTime"
+			jdbcType="TIMESTAMP" />
+		<result column="finUserId" property="finUserId"
+			jdbcType="VARCHAR" />
+		<result column="finUserName" property="finUserName"
+			jdbcType="VARCHAR" />
+		<result column="finUserDeptId" property="finUserDeptId"
+			jdbcType="VARCHAR" />
+		<result column="finUserDeptName" property="finUserDeptName"
+			jdbcType="VARCHAR" />
+		<result column="payName" property="payName" jdbcType="VARCHAR" />
+		<result column="payTime" property="payTime"
+			jdbcType="VARCHAR" />
+		<result column="payUserDeptId" property="payUserDeptId"
+			jdbcType="VARCHAR" />
+		<result column="payUserDeptName" property="payUserDeptName"
+			jdbcType="VARCHAR" />
+		<result column="payUserId" property="payUserId"
+			jdbcType="VARCHAR" />
+		<result column="payUserName" property="payUserName"
+			jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, projId, projName, projNo, bizTime, bizUserId,
+		bizUserName,
+		bizUserDeptId, bizUserDeptName,
+		promotionUserId,
+		promotionUserName, releaseManagerId, releaseManagerName,
+		recordSituation,
+		estimatedRating, actualRating, projType, productType,
+		declareType, marketingType,
+		contentType, promotionDirection,
+		totalBudget, totalExpenses, del,
+		cTime, isEffective,
+		projectShare,
+		contTitle, contTime, contUserDeptId, contUserDeptName, contUserId,
+		contUserName, finName, finTime, finUserId, finUserName, finUserDeptId,
+		finUserDeptName,
+		payName, payTime, payUserDeptId, payUserDeptName,
+		payUserId, payUserName
+	</sql>
+	<sql id="Simple_Column_List">
+		p.id, p.projId, p.projName, p.projNo, p.bizTime,
+		p.bizUserId,
+		p.bizUserName,
+		p.bizUserDeptId, p.bizUserDeptName,
+		p.promotionUserId,
+		p.promotionUserName, p.releaseManagerId,
+		p.releaseManagerName,
+		p.recordSituation,
+		p.estimatedRating,d.dName as estimatedRatingName,
+		p.projType,e.dName as projTypeName,p.marketingType,g.dName as
+		marketingTypeName,
+		p.declareType,h.dName as
+		declareTypeName,p.contentType,i.dName as
+		contentTypeName,p.actualRating,m.dName as actualRatingName,
+		p.productType,f.dName as productTypeName
+	</sql>
+	<select id="listChoose" resultMap="BaseResultMap">
+		select p.projId, p.projName from im_tm_project p where p.del = 0 and p.isEffective = 0 and p.projName is NOT null and p.projName != ''  ORDER BY p.cTime desc
+	</select>
+	<select id="selectProjList" resultMap="BaseResultMap"
+		parameterType="java.util.Map">
+		select p.id, p.projId, p.projName, p.projNo,p.bizUserDeptId, p.bizUserDeptName, p.bizTime,p.bizUserId, p.bizUserName,p.totalBudget
+		from im_tm_project p inner join im_tc_data_auth a on a.objId =
+		p.projId 
+		where a.authId =#{authId,jdbcType=VARCHAR} and a.authType ="01"
+		and p.del = 0 and isEffective = 0 order by p.cTime desc
+	</select>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Simple_Column_List" />
+		from im_tm_project p left join im_tm_dict d
+		on p.estimatedRating = d.id
+		and d.del = 0
+		left join im_tm_dict e on
+		p.projType = e.id and e.del = 0
+		left join im_tm_dict f on p.productType
+		= f.id and e.del = 0
+		left join
+		im_tm_dict g on p.marketingType = g.id
+		and g.del = 0
+		left join
+		im_tm_dict h on p.declareType = h.id and h.del
+		= 0
+		left join im_tm_dict
+		i on p.contentType = i.id and i.del = 0
+		left
+		join im_tm_dict m on
+		p.actualRating = m.id and m.del = 0
+		where p.projId
+		=
+		#{projId,jdbcType=VARCHAR} and p.del=0
+		group by p.id, p.projId,
+		p.projName, p.projNo, p.bizTime,
+		p.bizUserId,
+		p.bizUserName,
+		p.bizUserDeptId, p.bizUserDeptName,
+		p.promotionUserId,
+		p.promotionUserName, p.releaseManagerId,
+		p.releaseManagerName,
+		p.recordSituation,
+		p.estimatedRating,estimatedRatingName,p.projType,projTypeName,p.marketingType,marketingTypeName
+		,p.declareType,declareTypeName,p.contentType,contentTypeName,p.actualRating,actualRatingName,
+		p.productType,productTypeName
+	</select>
+	<insert id="insertSelective"
+		parameterType="com.allmsi.mis.model.po.Project">
+		insert into im_tm_project
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="projId != null">
+				projId,
+			</if>
+			<if test="projName != null">
+				projName,
+			</if>
+			<if test="projNo != null">
+				projNo,
+			</if>
+			<if test="bizTime != null">
+				bizTime,
+			</if>
+			<if test="bizUserId != null">
+				bizUserId,
+			</if>
+			<if test="bizUserName != null">
+				bizUserName,
+			</if>
+			<if test="bizUserDeptId != null">
+				bizUserDeptId,
+			</if>
+			<if test="bizUserDeptName != null">
+				bizUserDeptName,
+			</if>
+			<if test="promotionUserId != null">
+				promotionUserId,
+			</if>
+			<if test="promotionUserName != null">
+				promotionUserName,
+			</if>
+			<if test="releaseManagerId != null">
+				releaseManagerId,
+			</if>
+			<if test="releaseManagerName != null">
+				releaseManagerName,
+			</if>
+			<if test="recordSituation != null">
+				recordSituation,
+			</if>
+			<if test="estimatedRating != null">
+				estimatedRating,
+			</if>
+			<if test="actualRating != null">
+				actualRating,
+			</if>
+			<if test="projType != null">
+				projType,
+			</if>
+			<if test="productType != null">
+				productType,
+			</if>
+			<if test="declareType != null">
+				declareType,
+			</if>
+			<if test="marketingType != null">
+				marketingType,
+			</if>
+			<if test="contentType != null">
+				contentType,
+			</if>
+			<if test="promotionDirection != null">
+				promotionDirection,
+			</if>
+			<if test="totalBudget != null">
+				totalBudget,
+			</if>
+			<if test="totalExpenses != null">
+				totalExpenses,
+			</if>
+			<if test="cTime != null">
+				cTime,
+			</if>
+			<if test="isEffective != null">
+				isEffective,
+			</if>
+			<if test="projectShare != null">
+				projectShare,
+			</if>
+			<if test="contTitle != null">
+				contTitle,
+			</if>
+			<if test="contTime != null">
+				contTime,
+			</if>
+			<if test="contUserDeptId != null">
+				contUserDeptId,
+			</if>
+			<if test="contUserDeptName != null">
+				contUserDeptName,
+			</if>
+			<if test="contUserId != null">
+				contUserId,
+			</if>
+			<if test="contUserName != null">
+				contUserName,
+			</if>
+			<if test="finName != null">
+				finName,
+			</if>
+			<if test="finTime != null">
+				finTime,
+			</if>
+			<if test="finUserId != null">
+				finUserId,
+			</if>
+			<if test="finUserName != null">
+				finUserName,
+			</if>
+			<if test="finUserDeptId != null">
+				finUserDeptId,
+			</if>
+			<if test="finUserDeptName != null">
+				finUserDeptName,
+			</if>
+			<if test="payName != null">
+				payName,
+			</if>
+			<if test="payTime != null">
+				payTime,
+			</if>
+			<if test="payUserDeptId != null">
+				payUserDeptId,
+			</if>
+			<if test="payUserDeptName != null">
+				payUserDeptName,
+			</if>
+			<if test="payUserId != null">
+				payUserId,
+			</if>
+			<if test="payUserName != null">
+				payUserName,
+			</if>
+			del
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=VARCHAR},
+			</if>
+			<if test="projId != null">
+				#{projId,jdbcType=VARCHAR},
+			</if>
+			<if test="projName != null">
+				#{projName,jdbcType=VARCHAR},
+			</if>
+			<if test="projNo != null">
+				#{projNo,jdbcType=VARCHAR},
+			</if>
+			<if test="bizTime != null">
+				#{bizTime,jdbcType=VARCHAR},
+			</if>
+			<if test="bizUserId != null">
+				#{bizUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="bizUserName != null">
+				#{bizUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="bizUserDeptId != null">
+				#{bizUserDeptId,jdbcType=VARCHAR},
+			</if>
+			<if test="bizUserDeptName != null">
+				#{bizUserDeptName,jdbcType=VARCHAR},
+			</if>
+			<if test="promotionUserId != null">
+				#{promotionUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="promotionUserName != null">
+				#{promotionUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="releaseManagerId != null">
+				#{releaseManagerId,jdbcType=VARCHAR},
+			</if>
+			<if test="releaseManagerName != null">
+				#{releaseManagerName,jdbcType=VARCHAR},
+			</if>
+			<if test="recordSituation != null">
+				#{recordSituation,jdbcType=VARCHAR},
+			</if>
+			<if test="estimatedRating != null">
+				#{estimatedRating,jdbcType=VARCHAR},
+			</if>
+			<if test="actualRating != null">
+				#{actualRating,jdbcType=VARCHAR},
+			</if>
+			<if test="projType != null">
+				#{projType,jdbcType=VARCHAR},
+			</if>
+			<if test="productType != null">
+				#{productType,jdbcType=VARCHAR},
+			</if>
+			<if test="declareType != null">
+				#{declareType,jdbcType=VARCHAR},
+			</if>
+			<if test="marketingType != null">
+				#{marketingType,jdbcType=VARCHAR},
+			</if>
+			<if test="contentType != null">
+				#{contentType,jdbcType=VARCHAR},
+			</if>
+			<if test="promotionDirection != null">
+				#{promotionDirection,jdbcType=VARCHAR},
+			</if>
+			<if test="totalBudget != null">
+				#{totalBudget,jdbcType=INTEGER},
+			</if>
+			<if test="totalExpenses != null">
+				#{totalExpenses,jdbcType=INTEGER},
+			</if>
+			<if test="cTime != null">
+				#{cTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="isEffective != null">
+				#{isEffective,jdbcType=TINYINT},
+			</if>
+			<if test="projectShare != null">
+				#{projectShare,jdbcType=INTEGER},
+			</if>
+			<if test="contTitle != null">
+				#{contTitle,jdbcType=VARCHAR},
+			</if>
+			<if test="contTime != null">
+				#{contTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="contUserDeptId != null">
+				#{contUserDeptId,jdbcType=VARCHAR},
+			</if>
+			<if test="contUserDeptName != null">
+				#{contUserDeptName,jdbcType=VARCHAR},
+			</if>
+			<if test="contUserId != null">
+				#{contUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="contUserName != null">
+				#{contUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="finName != null">
+				#{finName,jdbcType=VARCHAR},
+			</if>
+			<if test="finTime != null">
+				#{finTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="finUserId != null">
+				#{finUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="finUserName != null">
+				#{finUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="finUserDeptId != null">
+				#{finUserDeptId,jdbcType=VARCHAR},
+			</if>
+			<if test="finUserDeptName != null">
+				#{finUserDeptName,jdbcType=VARCHAR},
+			</if>
+			<if test="payName != null">
+				#{payName,jdbcType=VARCHAR},
+			</if>
+			<if test="payTime != null">
+				#{payTime,jdbcType=VARCHAR},
+			</if>
+			<if test="payUserDeptId != null">
+				#{payUserDeptId,jdbcType=VARCHAR},
+			</if>
+			<if test="payUserDeptName != null">
+				#{payUserDeptName,jdbcType=VARCHAR},
+			</if>
+			<if test="payUserId != null">
+				#{payUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="payUserName != null">
+				#{payUserName,jdbcType=VARCHAR},
+			</if>
+			0
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.allmsi.mis.model.po.Project">
+		update im_tm_project
+		<set>
+			<if test="projId != null">
+				projId = #{projId,jdbcType=VARCHAR},
+			</if>
+			<if test="projName != null">
+				projName = #{projName,jdbcType=VARCHAR},
+			</if>
+			<if test="projNo != null">
+				projNo = #{projNo,jdbcType=VARCHAR},
+			</if>
+			<if test="bizTime != null">
+				bizTime = #{bizTime,jdbcType=VARCHAR},
+			</if>
+			<if test="bizUserId != null">
+				bizUserId = #{bizUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="bizUserName != null">
+				bizUserName = #{bizUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="bizUserDeptId != null">
+				bizUserDeptId = #{bizUserDeptId,jdbcType=VARCHAR},
+			</if>
+			<if test="bizUserDeptName != null">
+				bizUserDeptName = #{bizUserDeptName,jdbcType=VARCHAR},
+			</if>
+			<if test="promotionUserId != null">
+				promotionUserId = #{promotionUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="promotionUserName != null">
+				promotionUserName =
+				#{promotionUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="releaseManagerId != null">
+				releaseManagerId = #{releaseManagerId,jdbcType=VARCHAR},
+			</if>
+			<if test="releaseManagerName != null">
+				releaseManagerName =
+				#{releaseManagerName,jdbcType=VARCHAR},
+			</if>
+			<if test="recordSituation != null">
+				recordSituation = #{recordSituation,jdbcType=VARCHAR},
+			</if>
+			<if test="estimatedRating != null">
+				estimatedRating = #{estimatedRating,jdbcType=VARCHAR},
+			</if>
+			<if test="actualRating != null">
+				actualRating = #{actualRating,jdbcType=VARCHAR},
+			</if>
+			<if test="projType != null">
+				projType = #{projType,jdbcType=VARCHAR},
+			</if>
+			<if test="productType != null">
+				productType = #{productType,jdbcType=VARCHAR},
+			</if>
+			<if test="declareType != null">
+				declareType = #{declareType,jdbcType=VARCHAR},
+			</if>
+			<if test="marketingType != null">
+				marketingType = #{marketingType,jdbcType=VARCHAR},
+			</if>
+			<if test="contentType != null">
+				contentType = #{contentType,jdbcType=VARCHAR},
+			</if>
+			<if test="promotionDirection != null">
+				promotionDirection =
+				#{promotionDirection,jdbcType=VARCHAR},
+			</if>
+			<if test="totalBudget != null">
+				totalBudget = #{totalBudget,jdbcType=INTEGER},
+			</if>
+			<if test="totalExpenses != null">
+				totalExpenses = #{totalExpenses,jdbcType=INTEGER},
+			</if>
+			<if test="del != null">
+				del = #{del,jdbcType=TINYINT},
+			</if>
+			<if test="cTime != null">
+				cTime = #{cTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="isEffective != null">
+				isEffective = #{isEffective,jdbcType=TINYINT},
+			</if>
+			<if test="projectShare != null">
+				projectShare = #{projectShare,jdbcType=INTEGER},
+			</if>
+			<if test="contTitle != null">
+				contTitle = #{contTitle,jdbcType=VARCHAR},
+			</if>
+			<if test="contTime != null">
+				contTime = #{contTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="contUserDeptId != null">
+				contUserDeptId = #{contUserDeptId,jdbcType=VARCHAR},
+			</if>
+			<if test="contUserDeptName != null">
+				contUserDeptName = #{contUserDeptName,jdbcType=VARCHAR},
+			</if>
+			<if test="contUserId != null">
+				contUserId = #{contUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="contUserName != null">
+				contUserName = #{contUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="finName != null">
+				finName = #{finName,jdbcType=VARCHAR},
+			</if>
+			<if test="finTime != null">
+				finTime = #{finTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="finUserId != null">
+				finUserId = #{finUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="finUserName != null">
+				finUserName = #{finUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="finUserDeptId != null">
+				finUserDeptId = #{finUserDeptId,jdbcType=VARCHAR},
+			</if>
+			<if test="finUserDeptName != null">
+				finUserDeptName = #{finUserDeptName,jdbcType=VARCHAR},
+			</if>
+			<if test="payName != null">
+				payName = #{payName,jdbcType=VARCHAR},
+			</if>
+			<if test="payTime != null">
+				payTime = #{payTime,jdbcType=VARCHAR},
+			</if>
+			<if test="payUserDeptId != null">
+				payUserDeptId = #{payUserDeptId,jdbcType=VARCHAR},
+			</if>
+			<if test="payUserDeptName != null">
+				payUserDeptName = #{payUserDeptName,jdbcType=VARCHAR},
+			</if>
+			<if test="payUserId != null">
+				payUserId = #{payUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="payUserName != null">
+				payUserName = #{payUserName,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+	<update id="deleteByPrimaryKey" parameterType="java.lang.String">
+		update
+		im_tm_project set del = 1
+		where projId = #{projId,jdbcType=VARCHAR}
+	</update>
+	<update id="updateEffective" parameterType="java.lang.String">
+		update
+		im_tm_project
+		set isEffective = 1
+		where projId = #{projId,jdbcType=VARCHAR}
+	</update>
+
+</mapper>

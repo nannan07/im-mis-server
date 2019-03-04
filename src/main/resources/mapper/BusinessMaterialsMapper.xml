@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.allmsi.mis.dao.BusinessMaterialsMapper">
+	<resultMap id="BaseResultMap"
+		type="com.allmsi.mis.model.po.BusinessMaterials">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="bizId" property="bizId" jdbcType="VARCHAR" />
+		<result column="materType" property="materType"
+			jdbcType="VARCHAR" />
+		<result column="projId" property="projId" jdbcType="VARCHAR" />
+		<result column="url" property="url" jdbcType="VARCHAR" />
+		<result column="sort" property="sort" jdbcType="INTEGER" />
+		<result column="situation" property="situation" jdbcType="VARCHAR" />
+		<result column="cTime" property="cTime" jdbcType="TIMESTAMP" />
+		<result column="cUserId" property="cUserId" jdbcType="VARCHAR" />
+		<result column="uTime" property="uTime" jdbcType="TIMESTAMP" />
+		<result column="uUserId" property="uUserId" jdbcType="VARCHAR" />
+		<result column="del" property="del" jdbcType="INTEGER" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		m.id, m.bizId, m.materType,d.dName as
+		materTypeName,m.projId, m.url,
+		m.sort,
+		m.cTime, m.cUserId, m.uTime,
+		m.uUserId,m.situation
+	</sql>
+	<select id="selectByProjId" parameterType="java.lang.String" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from im_tm_business_materials m left join im_tm_dict d on m.materType
+		= d.id and d.del = 0
+		where m.del = 0 and projId = #{projId,jdbcType=VARCHAR}
+		order by d.dSort
+	</select>
+	<select id="selectList" parameterType="java.util.Map"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from im_tm_business_materials m left join im_tm_dict d on m.materType
+		= d.id and d.del = 0
+		where m.del = 0
+		<if test="bizId != '' and bizId != null">
+			and bizId = #{bizId,jdbcType=VARCHAR}
+		</if>
+		order by d.dSort
+	</select>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from im_tm_business_materials m left join im_tm_dict d on m.materType
+		= d.id and d.del = 0
+		where m.id = #{id,jdbcType=VARCHAR} and m.del = 0
+		order by d.dSort
+	</select>
+	<insert id="insertSelective"
+		parameterType="com.allmsi.mis.model.po.BusinessMaterials">
+		insert into im_tm_business_materials
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="bizId != null">
+				bizId,
+			</if>
+			<if test="materType != null">
+				materType,
+			</if>
+			<if test="projId != null">
+				projId,
+			</if>
+			<if test="url != null">
+				url,
+			</if>
+			<if test="sort != null">
+				sort,
+			</if>
+			<if test="cUserId != null">
+				cUserId,
+			</if>
+			<if test="uTime != null">
+				uTime,
+			</if>
+			<if test="uUserId != null">
+				uUserId,
+			</if>
+			<if test="situation != null">
+				situation,
+			</if>
+			cTime,del,
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=VARCHAR},
+			</if>
+			<if test="bizId != null">
+				#{bizId,jdbcType=VARCHAR},
+			</if>
+			<if test="materType != null">
+				#{materType,jdbcType=VARCHAR},
+			</if>
+			<if test="projId != null">
+				#{projId,jdbcType=VARCHAR},
+			</if>
+			<if test="url != null">
+				#{url,jdbcType=VARCHAR},
+			</if>
+			<if test="sort != null">
+				#{sort,jdbcType=INTEGER},
+			</if>
+			<if test="cTime != null">
+				#{cTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="cUserId != null">
+				#{cUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="uTime != null">
+				#{uTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="uUserId != null">
+				#{uUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="situation != null">
+				#{situation,jdbcType=VARCHAR},
+			</if>
+			now(),0
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.allmsi.mis.model.po.BusinessMaterials">
+		update im_tm_business_materials
+		<set>
+			<if test="bizId != null">
+				bizId = #{bizId,jdbcType=VARCHAR},
+			</if>
+			<if test="materType != null">
+				materType = #{materType,jdbcType=VARCHAR},
+			</if>
+			<if test="projId != null">
+				projId = #{projId,jdbcType=VARCHAR},
+			</if>
+			<if test="url != null">
+				url = #{url,jdbcType=VARCHAR},
+			</if>
+			<if test="sort != null">
+				sort = #{sort,jdbcType=INTEGER},
+			</if>
+			<if test="cTime != null">
+				cTime = #{cTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="cUserId != null">
+				cUserId = #{cUserId,jdbcType=VARCHAR},
+			</if>
+			uTime = now(),
+			<if test="uUserId != null">
+				uUserId = #{uUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="del != null">
+				del = #{del,jdbcType=INTEGER},
+			</if>
+			<if test="situation != null">
+				#{situation,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+	<insert id="insertList" parameterType="java.util.List">
+		insert im_tm_business_materials (id,bizId,materType,projId,url,sort,situation,
+		cTime,cUserId,uTime,uUserId,del) values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(#{item.id},#{item.bizId},#{item.materType},#{item.projId},#{item.url},
+			#{item.sort},#{item.situation},now(),#{item.cUserId},#{item.uTime},#{item.uUserId},0
+			)
+		</foreach>
+	</insert>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		update
+		im_tm_business_materials set del = 1 , uTime = now() ,uUserId =
+		#{uUserId,jdbcType=VARCHAR}
+		where id = #{id,jdbcType=VARCHAR}
+	</delete>
+</mapper>

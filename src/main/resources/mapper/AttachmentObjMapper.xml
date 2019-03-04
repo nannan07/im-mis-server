@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.allmsi.mis.dao.AttachmentObjMapper">
+	<resultMap id="BaseResultMap"
+		type="com.allmsi.mis.model.po.AttachmentObj">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="fileId" property="fileId" jdbcType="VARCHAR" />
+		<result column="objectId" property="objectId"
+			jdbcType="VARCHAR" />
+		<result column="objectType" property="objectType"
+			jdbcType="VARCHAR" />
+		<result column="cTime" property="cTime" jdbcType="TIMESTAMP" />
+		<result column="uTime" property="uTime" jdbcType="TIMESTAMP" />
+		<result column="del" property="del" jdbcType="INTEGER" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, fileId, objectId, objectType, cTime, uTime, del
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from im_tm_attachment_obj
+		where id = #{id,jdbcType=VARCHAR}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+		delete from
+		im_tm_attachment_obj
+		where id = #{id,jdbcType=VARCHAR}
+	</delete>
+	<insert id="insertSelective"
+		parameterType="com.allmsi.mis.model.po.AttachmentObj">
+		insert into im_tm_attachment_obj
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="fileId != null">
+				fileId,
+			</if>
+			<if test="objectId != null">
+				objectId,
+			</if>
+			<if test="objectType != null">
+				objectType,
+			</if>
+			cTime, del
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=VARCHAR},
+			</if>
+			<if test="fileId != null">
+				#{fileId,jdbcType=VARCHAR},
+			</if>
+			<if test="objectId != null">
+				#{objectId,jdbcType=VARCHAR},
+			</if>
+			<if test="objectType != null">
+				#{objectType,jdbcType=VARCHAR},
+			</if>
+			now(),0
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.allmsi.mis.model.po.AttachmentObj">
+		update im_tm_attachment_obj
+		<set>
+			<if test="fileId != null">
+				fileId = #{fileId,jdbcType=VARCHAR},
+			</if>
+			<if test="objectId != null">
+				objectId = #{objectId,jdbcType=VARCHAR},
+			</if>
+			<if test="objectType != null">
+				objectType = #{objectType,jdbcType=VARCHAR},
+			</if>
+			uTime = now()
+		</set>
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+	<update id="deleteByFileId" parameterType="java.lang.String">
+		update
+		im_tm_attachment_obj set del = 1
+		where fileId =
+		#{fileId,jdbcType=VARCHAR}
+	</update>
+</mapper>

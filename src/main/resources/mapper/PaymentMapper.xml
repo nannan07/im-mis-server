@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.allmsi.mis.dao.PaymentMapper">
+	<resultMap id="BaseResultMap"
+		type="com.allmsi.mis.model.po.Payment">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="projId" property="projId" jdbcType="VARCHAR" />
+		<result column="finId" property="finId" jdbcType="VARCHAR" />
+		<result column="bizId" property="bizId" jdbcType="VARCHAR" />
+		<result column="contId" property="contId" jdbcType="VARCHAR" />
+		<result column="payDeptId" property="payDeptId"
+			jdbcType="VARCHAR" />
+		<result column="payDeptName" property="payDeptName"
+			jdbcType="VARCHAR" />
+		<result column="managerId" property="managerId"
+			jdbcType="VARCHAR" />
+		<result column="managerName" property="managerName"
+			jdbcType="VARCHAR" />
+		<result column="payCause" property="payCause"
+			jdbcType="VARCHAR" />
+		<result column="payAmount" property="payAmount"
+			jdbcType="INTEGER" />
+		<result column="payWay" property="payWay" jdbcType="VARCHAR" />
+		<result column="payCompanyId" property="payCompanyId"
+			jdbcType="VARCHAR" />
+		<result column="payDate" property="payDate"
+			jdbcType="VARCHAR" />
+		<result column="isInvoice" property="isInvoice"
+			jdbcType="INTEGER" />
+		<result column="beneficiary" property="beneficiary"
+			jdbcType="VARCHAR" />
+		<result column="accountBank" property="accountBank"
+			jdbcType="VARCHAR" />
+		<result column="bankAccount" property="bankAccount"
+			jdbcType="VARCHAR" />
+		<result column="payName" property="payName" jdbcType="VARCHAR" />
+		<result column="isSingle" property="isSingle"
+			jdbcType="INTEGER" />
+		<result column="cTime" property="cTime" jdbcType="TIMESTAMP" />
+		<result column="cUserId" property="cUserId" jdbcType="VARCHAR" />
+		<result column="uTime" property="uTime" jdbcType="TIMESTAMP" />
+		<result column="uUserId" property="uUserId" jdbcType="VARCHAR" />
+		<result column="draft" property="draft" jdbcType="INTEGER" />
+		<result column="del" property="del" jdbcType="INTEGER" />
+		<result column="invoiceSituation" property="invoiceSituation"
+			jdbcType="VARCHAR" />
+		<result column="note" property="note" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		p.id, p.projId,p.isSingle, p.finId, p.bizId, p.payDeptId,
+		p.payDeptName,
+		p.managerId, p.managerName, p.payCause,
+		p.payAmount,
+		p.payWay,e.dName as payWayName, p.payCompanyId,d.dName as
+		payCompanyName,
+		p.payDate, p.isInvoice, p.beneficiary, p.accountBank,
+		p.bankAccount,
+		p.cTime, p.cUserId, p.uTime,
+		p.uUserId,p.payName,p.invoiceSituation,p.note,p.draft,p.contId
+	</sql>
+	<sql id="Simple_Column_List">
+		p.id, p.projId, p.finId, p.bizId, p.payDeptId,
+		p.payDeptName,
+		p.managerId, p.managerName, p.payCause,
+		p.payAmount,
+		p.payWay, p.payCompanyId,
+		p.payDate, p.isInvoice, p.beneficiary,
+		p.accountBank,
+		p.bankAccount,
+		p.cTime, p.cUserId, p.uTime,
+		p.uUserId,p.payName,p.invoiceSituation,p.note,p.contId
+	</sql>
+	<select id="draft" resultMap="BaseResultMap"
+		parameterType="java.util.Map">
+		select p.id,p.payName,p.payDeptId,p.payDeptName,p.payAmount,p.cTime
+		from im_tm_payment p
+		LEFT JOIN im_tc_data_user du on p.id = du.objId
+		where p.del = 0 and p.draft=0 and
+		du.userId=#{cUserId,jdbcType=VARCHAR} and du.type='01'
+		<if test="search != '' and search != null">
+			and p.payName like concat ('%',#{search},'%')
+		</if>
+	</select>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from im_tm_payment p
+		left join im_tm_dict d on p.payCompanyId = d.id
+		and d.del = 0
+		left join
+		im_tm_dict e
+		on p.payWay = e.id
+		and e.del = 0
+		where p.id =
+		#{id,jdbcType=VARCHAR} and p.del = 0
+	</select>
+	<select id="selectByProjId" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from im_tm_payment p
+		left join im_tm_dict d on p.payCompanyId = d.id
+		and d.del = 0
+		left join im_tm_dict e
+		on p.payWay = e.id
+		and e.del = 0
+		where p.projId = #{projId,jdbcType=VARCHAR} and
+		p.del = 0
+		order by
+		p.cTime
+	</select>
+	<select id="selectByIds" parameterType="java.util.List"
+		resultMap="BaseResultMap">
+		select payDeptId,payDeptName,
+		managerId,managerName
+		from im_tm_payment
+		where id in
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			item=#{item}
+		</foreach>
+		order by cTime desc
+	</select>
+	<update id="deleteByPrimaryKey" parameterType="java.lang.String">
+		update
+		im_tm_payment set del = 1,
+		uTime = now()
+		where id =
+		#{id,jdbcType=VARCHAR}
+	</update>
+	<insert id="insertSelective"
+		parameterType="com.allmsi.mis.model.po.Payment">
+		insert into im_tm_payment
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="projId != null">
+				projId,
+			</if>
+			<if test="finId != null">
+				finId,
+			</if>
+			<if test="bizId != null">
+				bizId,
+			</if>
+			<if test="payDeptId != null">
+				payDeptId,
+			</if>
+			<if test="payDeptName != null">
+				payDeptName,
+			</if>
+			<if test="managerId != null">
+				managerId,
+			</if>
+			<if test="managerName != null">
+				managerName,
+			</if>
+			<if test="payCause != null">
+				payCause,
+			</if>
+			<if test="payAmount != null">
+				payAmount,
+			</if>
+			<if test="payWay != null">
+				payWay,
+			</if>
+			<if test="payCompanyId != null">
+				payCompanyId,
+			</if>
+			<if test="payDate != null">
+				payDate,
+			</if>
+			<if test="isInvoice != null">
+				isInvoice,
+			</if>
+			<if test="beneficiary != null">
+				beneficiary,
+			</if>
+			<if test="accountBank != null">
+				accountBank,
+			</if>
+			<if test="bankAccount != null">
+				bankAccount,
+			</if>
+			<if test="cUserId != null">
+				cUserId,
+			</if>
+			<if test="uTime != null">
+				uTime,
+			</if>
+			<if test="uUserId != null">
+				uUserId,
+			</if>
+			<if test="payName != null">
+				payName,
+			</if>
+			<if test="isSingle != null">
+				isSingle,
+			</if>
+			<if test="invoiceSituation != null">
+				invoiceSituation,
+			</if>
+			<if test="note != null">
+				note,
+			</if>
+			<if test="draft != null">
+				draft,
+			</if>
+			<if test="contId != null">
+				contId,
+			</if>
+			cTime,del
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=VARCHAR},
+			</if>
+			<if test="projId != null">
+				#{projId,jdbcType=VARCHAR},
+			</if>
+			<if test="finId != null">
+				#{finId,jdbcType=VARCHAR},
+			</if>
+			<if test="bizId != null">
+				#{bizId,jdbcType=VARCHAR},
+			</if>
+			<if test="payDeptId != null">
+				#{payDeptId,jdbcType=VARCHAR},
+			</if>
+			<if test="payDeptName != null">
+				#{payDeptName,jdbcType=VARCHAR},
+			</if>
+			<if test="managerId != null">
+				#{managerId,jdbcType=VARCHAR},
+			</if>
+			<if test="managerName != null">
+				#{managerName,jdbcType=VARCHAR},
+			</if>
+			<if test="payCause != null">
+				#{payCause,jdbcType=VARCHAR},
+			</if>
+			<if test="payAmount != null">
+				#{payAmount,jdbcType=INTEGER},
+			</if>
+			<if test="payWay != null">
+				#{payWay,jdbcType=VARCHAR},
+			</if>
+			<if test="payCompanyId != null">
+				#{payCompanyId,jdbcType=VARCHAR},
+			</if>
+			<if test="payDate != null">
+				#{payDate,jdbcType=VARCHAR},
+			</if>
+			<if test="isInvoice != null">
+				#{isInvoice,jdbcType=INTEGER},
+			</if>
+			<if test="beneficiary != null">
+				#{beneficiary,jdbcType=VARCHAR},
+			</if>
+			<if test="accountBank != null">
+				#{accountBank,jdbcType=VARCHAR},
+			</if>
+			<if test="bankAccount != null">
+				#{bankAccount,jdbcType=VARCHAR},
+			</if>
+			<if test="cUserId != null">
+				#{cUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="uTime != null">
+				#{uTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="uUserId != null">
+				#{uUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="payName != null">
+				#{payName,jdbcType=VARCHAR},
+			</if>
+			<if test="isSingle != null">
+				#{isSingle,jdbcType=VARCHAR},
+			</if>
+			<if test="invoiceSituation != null">
+				#{invoiceSituation,jdbcType=VARCHAR},
+			</if>
+			<if test="note != null">
+				#{note,jdbcType=VARCHAR},
+			</if>
+			<if test="draft != null">
+				#{draft,jdbcType=INTEGER},
+			</if>
+			<if test="contId != null">
+				#{contId,jdbcType=INTEGER},
+			</if>
+			now(),0
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.allmsi.mis.model.po.Payment">
+		update im_tm_payment
+		<set>
+			<if test="projId != null">
+				projId = #{projId,jdbcType=VARCHAR},
+			</if>
+			<if test="finId != null">
+				finId = #{finId,jdbcType=VARCHAR},
+			</if>
+			<if test="bizId != null">
+				bizId = #{bizId,jdbcType=VARCHAR},
+			</if>
+			<if test="payDeptId != null">
+				payDeptId = #{payDeptId,jdbcType=VARCHAR},
+			</if>
+			<if test="payDeptName != null">
+				payDeptName = #{payDeptName,jdbcType=VARCHAR},
+			</if>
+			<if test="managerId != null">
+				managerId = #{managerId,jdbcType=VARCHAR},
+			</if>
+			<if test="managerName != null">
+				managerName = #{managerName,jdbcType=VARCHAR},
+			</if>
+			<if test="payCause != null">
+				payCause = #{payCause,jdbcType=VARCHAR},
+			</if>
+			<if test="payAmount != null">
+				payAmount = #{payAmount,jdbcType=INTEGER},
+			</if>
+			<if test="payWay != null">
+				payWay = #{payWay,jdbcType=VARCHAR},
+			</if>
+			<if test="payCompanyId != null">
+				payCompanyId = #{payCompanyId,jdbcType=VARCHAR},
+			</if>
+			<if test="payDate != null">
+				payDate = #{payDate,jdbcType=VARCHAR},
+			</if>
+			<if test="isInvoice != null">
+				isInvoice = #{isInvoice,jdbcType=INTEGER},
+			</if>
+			<if test="beneficiary != null">
+				beneficiary = #{beneficiary,jdbcType=VARCHAR},
+			</if>
+			<if test="accountBank != null">
+				accountBank = #{accountBank,jdbcType=VARCHAR},
+			</if>
+			<if test="bankAccount != null">
+				bankAccount = #{bankAccount,jdbcType=VARCHAR},
+			</if>
+			<if test="cTime != null">
+				cTime = #{cTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="cUserId != null">
+				cUserId = #{cUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="uUserId != null">
+				uUserId = #{uUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="del != null">
+				del = #{del,jdbcType=INTEGER},
+			</if>
+			<if test="payName != null">
+				payName = #{payName,jdbcType=VARCHAR},
+			</if>
+			<if test="isSingle != null">
+				isSingle = #{isSingle,jdbcType=VARCHAR},
+			</if>
+			<if test="invoiceSituation != null">
+				invoiceSituation=#{invoiceSituation,jdbcType=VARCHAR},
+			</if>
+			<if test="note != null">
+				note=#{note,jdbcType=VARCHAR},
+			</if>
+			<if test="draft != null">
+				draft=#{draft,jdbcType=INTEGER},
+			</if>
+			<if test="contId != null">
+				#{contId,jdbcType=INTEGER},
+			</if>
+			uTime = now()
+		</set>
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+	<select id="selectPaymentList" parameterType="java.util.Map"
+		resultMap="BaseResultMap">
+		select
+		p.payName,p.payDeptName,p.payAmount,p.cTime
+		from im_tm_payment p
+		where p.del = 0 and p.projId = #{projId,jdbcType=VARCHAR}
+		<if test="payName != '' and payName != null">
+			and p.payName like concat('%',#{payName},'%')
+		</if>
+		<if test="cTime != '' and cTime != null">
+			and DATE_FORMAT(p.cTime,'%Y%m%d') = #{cTime}
+		</if>
+		order by p.cTime desc
+	</select>
+</mapper>

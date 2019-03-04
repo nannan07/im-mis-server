@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.allmsi.mis.dao.AttachmentMapper">
+	<resultMap id="BaseResultMap"
+		type="com.allmsi.mis.model.po.Attachment">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="fileName" property="fileName"
+			jdbcType="VARCHAR" />
+		<result column="nFileName" property="nFileName"
+			jdbcType="VARCHAR" />
+		<result column="fileType" property="fileType"
+			jdbcType="VARCHAR" />
+		<result column="fileSize" property="fileSize" jdbcType="BIGINT" />
+		<result column="fileMd5" property="fileMd5" jdbcType="VARCHAR" />
+		<result column="filePath" property="filePath"
+			jdbcType="VARCHAR" />
+		<result column="filePathType" property="filePathType"
+			jdbcType="VARCHAR" />
+		<result column="fileState" property="fileState"
+			jdbcType="TINYINT" />
+		<result column="cTime" property="cTime" jdbcType="TIMESTAMP" />
+		<result column="uTime" property="uTime" jdbcType="TIMESTAMP" />
+		<result column="del" property="del" jdbcType="INTEGER" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, fileName, nFileName, fileType, fileSize, fileMd5, filePath,
+		filePathType, fileState,
+		cTime, uTime, del
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from im_tm_attachment
+		where id = #{id,jdbcType=VARCHAR}
+	</select>
+	<insert id="insertSelective"
+		parameterType="com.allmsi.mis.model.po.Attachment">
+		insert into im_tm_attachment
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="fileName != null">
+				fileName,
+			</if>
+			<if test="nFileName != null">
+				nFileName,
+			</if>
+			<if test="fileType != null">
+				fileType,
+			</if>
+			<if test="fileSize != null">
+				fileSize,
+			</if>
+			<if test="fileMd5 != null">
+				fileMd5,
+			</if>
+			<if test="filePath != null">
+				filePath,
+			</if>
+			<if test="filePathType != null">
+				filePathType,
+			</if>
+			<if test="fileState != null">
+				fileState,
+			</if>
+			<if test="cTime != null">
+				cTime,
+			</if>
+			<if test="uTime != null">
+				uTime,
+			</if>
+			<if test="del != null">
+				del,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=VARCHAR},
+			</if>
+			<if test="fileName != null">
+				#{fileName,jdbcType=VARCHAR},
+			</if>
+			<if test="nFileName != null">
+				#{nFileName,jdbcType=VARCHAR},
+			</if>
+			<if test="fileType != null">
+				#{fileType,jdbcType=VARCHAR},
+			</if>
+			<if test="fileSize != null">
+				#{fileSize,jdbcType=BIGINT},
+			</if>
+			<if test="fileMd5 != null">
+				#{fileMd5,jdbcType=VARCHAR},
+			</if>
+			<if test="filePath != null">
+				#{filePath,jdbcType=VARCHAR},
+			</if>
+			<if test="filePathType != null">
+				#{filePathType,jdbcType=VARCHAR},
+			</if>
+			<if test="fileState != null">
+				#{fileState,jdbcType=TINYINT},
+			</if>
+			<if test="cTime != null">
+				#{cTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="uTime != null">
+				#{uTime,jdbcType=TIMESTAMP},
+			</if>
+			del = 0
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.allmsi.mis.model.po.Attachment">
+		update im_tm_attachment
+		<set>
+			<if test="fileName != null">
+				fileName = #{fileName,jdbcType=VARCHAR},
+			</if>
+			<if test="nFileName != null">
+				nFileName = #{nFileName,jdbcType=VARCHAR},
+			</if>
+			<if test="fileType != null">
+				fileType = #{fileType,jdbcType=VARCHAR},
+			</if>
+			<if test="fileSize != null">
+				fileSize = #{fileSize,jdbcType=BIGINT},
+			</if>
+			<if test="fileMd5 != null">
+				fileMd5 = #{fileMd5,jdbcType=VARCHAR},
+			</if>
+			<if test="filePath != null">
+				filePath = #{filePath,jdbcType=VARCHAR},
+			</if>
+			<if test="filePathType != null">
+				filePathType = #{filePathType,jdbcType=VARCHAR},
+			</if>
+			<if test="fileState != null">
+				fileState = #{fileState,jdbcType=TINYINT},
+			</if>
+			<if test="cTime != null">
+				cTime = #{cTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="uTime != null">
+				uTime = #{uTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="del != null">
+				del = #{del,jdbcType=TINYINT},
+			</if>
+		</set>
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+	<update id="deleteByPrimaryKey" parameterType="java.lang.String">
+		update im_tm_attachment set del =1
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+</mapper>

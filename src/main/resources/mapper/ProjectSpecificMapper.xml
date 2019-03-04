@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.allmsi.mis.dao.ProjectSpecificMapper">
+	<resultMap id="BaseResultMap"
+		type="com.allmsi.mis.model.po.ProjectSpecific">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="projId" property="projId" jdbcType="VARCHAR" />
+		<result column="biziness" property="biziness"
+			jdbcType="VARCHAR" />
+		<result column="bizManager" property="bizManager"
+			jdbcType="VARCHAR" />
+		<result column="bizState" property="bizState"
+			jdbcType="VARCHAR" />
+		<result column="signingContract" property="signingContract"
+			jdbcType="VARCHAR" />
+		<result column="contractState" property="contractState"
+			jdbcType="VARCHAR" />
+		<result column="contractCounts" property="contractCounts"
+			jdbcType="INTEGER" />
+		<result column="finace" property="finace" jdbcType="VARCHAR" />
+		<result column="finaceState" property="finaceState"
+			jdbcType="VARCHAR" />
+		<result column="principal" property="principal"
+			jdbcType="VARCHAR" />
+		<result column="principalManager" property="principalManager"
+			jdbcType="VARCHAR" />
+		<result column="principalState" property="principalState"
+			jdbcType="VARCHAR" />
+		<result column="releaseOnline" property="releaseOnline"
+			jdbcType="VARCHAR" />
+		<result column="releaseManager" property="releaseManager"
+			jdbcType="VARCHAR" />
+		<result column="releaseState" property="releaseState"
+			jdbcType="VARCHAR" />
+		<result column="trackingSplits" property="trackingSplits"
+			jdbcType="VARCHAR" />
+		<result column="payManager" property="payManager"
+			jdbcType="VARCHAR" />
+		<result column="counts" property="counts" jdbcType="INTEGER" />
+		<result column="cTime" property="cTime" jdbcType="TIMESTAMP" />
+		
+		 <result column="projName" property="projName" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, projId, biziness, bizManager, bizState, signingContract,
+		contractState, contractCounts,
+		finace, finaceState, principal, principalManager, principalState,
+		releaseOnline,
+		releaseManager, releaseState, trackingSplits, payManager, counts
+	</sql>
+	<select id="selectList" resultMap="BaseResultMap" parameterType="java.util.Map">
+		select
+		ps.id, ps.projId, ps.biziness, ps.bizManager, ps.bizState, ps.signingContract,
+		ps.contractState, ps.contractCounts,
+		ps.finace, ps.finaceState, ps.principal, ps.principalManager, ps.principalState,
+		ps.releaseOnline, ps.releaseManager, ps.releaseState, ps.trackingSplits, ps.payManager, ps.counts,ps.cTime,p.projName
+		from im_tm_project_specific ps
+		inner join im_tm_project p on ps.projId = p.projId and p.isEffective = 0 and p.del = 0 
+		inner join im_tc_data_auth a on a.objId = ps.projId where a.authId =#{authId,jdbcType=VARCHAR}  and a.authType="01" 
+		order by ps.cTime desc
+	</select>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from im_tm_project_specific
+		where id = #{id,jdbcType=VARCHAR}
+	</select>
+	<insert id="insertSelective"
+		parameterType="com.allmsi.mis.model.po.ProjectSpecific">
+		insert into im_tm_project_specific
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="projId != null">
+				projId,
+			</if>
+			<if test="biziness != null">
+				biziness,
+			</if>
+			<if test="bizManager != null">
+				bizManager,
+			</if>
+			<if test="bizState != null">
+				bizState,
+			</if>
+			<if test="signingContract != null">
+				signingContract,
+			</if>
+			<if test="contractState != null">
+				contractState,
+			</if>
+			<if test="contractCounts != null">
+				contractCounts,
+			</if>
+			<if test="finace != null">
+				finace,
+			</if>
+			<if test="finaceState != null">
+				finaceState,
+			</if>
+			<if test="principal != null">
+				principal,
+			</if>
+			<if test="principalManager != null">
+				principalManager,
+			</if>
+			<if test="principalState != null">
+				principalState,
+			</if>
+			<if test="releaseOnline != null">
+				releaseOnline,
+			</if>
+			<if test="releaseManager != null">
+				releaseManager,
+			</if>
+			<if test="releaseState != null">
+				releaseState,
+			</if>
+			<if test="trackingSplits != null">
+				trackingSplits,
+			</if>
+			<if test="payManager != null">
+				payManager,
+			</if>
+			<if test="counts != null">
+				counts,
+			</if>
+			cTime
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=VARCHAR},
+			</if>
+			<if test="projId != null">
+				#{projId,jdbcType=VARCHAR},
+			</if>
+			<if test="biziness != null">
+				#{biziness,jdbcType=VARCHAR},
+			</if>
+			<if test="bizManager != null">
+				#{bizManager,jdbcType=VARCHAR},
+			</if>
+			<if test="bizState != null">
+				#{bizState,jdbcType=VARCHAR},
+			</if>
+			<if test="signingContract != null">
+				#{signingContract,jdbcType=VARCHAR},
+			</if>
+			<if test="contractState != null">
+				#{contractState,jdbcType=VARCHAR},
+			</if>
+			<if test="contractCounts != null">
+				#{contractCounts,jdbcType=INTEGER},
+			</if>
+			<if test="finace != null">
+				#{finace,jdbcType=VARCHAR},
+			</if>
+			<if test="finaceState != null">
+				#{finaceState,jdbcType=VARCHAR},
+			</if>
+			<if test="principal != null">
+				#{principal,jdbcType=VARCHAR},
+			</if>
+			<if test="principalManager != null">
+				#{principalManager,jdbcType=VARCHAR},
+			</if>
+			<if test="principalState != null">
+				#{principalState,jdbcType=VARCHAR},
+			</if>
+			<if test="releaseOnline != null">
+				#{releaseOnline,jdbcType=VARCHAR},
+			</if>
+			<if test="releaseManager != null">
+				#{releaseManager,jdbcType=VARCHAR},
+			</if>
+			<if test="releaseState != null">
+				#{releaseState,jdbcType=VARCHAR},
+			</if>
+			<if test="trackingSplits != null">
+				#{trackingSplits,jdbcType=VARCHAR},
+			</if>
+			<if test="payManager != null">
+				#{payManager,jdbcType=VARCHAR},
+			</if>
+			<if test="counts != null">
+				#{counts,jdbcType=INTEGER},
+			</if>
+			now()
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.allmsi.mis.model.po.ProjectSpecific">
+		update im_tm_project_specific
+		<set>
+			<if test="projId != null">
+				projId = #{projId,jdbcType=VARCHAR},
+			</if>
+			<if test="biziness != null">
+				biziness = #{biziness,jdbcType=VARCHAR},
+			</if>
+			<if test="bizManager != null">
+				bizManager = #{bizManager,jdbcType=VARCHAR},
+			</if>
+			<if test="bizState != null">
+				bizState = #{bizState,jdbcType=VARCHAR},
+			</if>
+			<if test="signingContract != null">
+				signingContract = #{signingContract,jdbcType=VARCHAR},
+			</if>
+			<if test="contractState != null">
+				contractState = #{contractState,jdbcType=VARCHAR},
+			</if>
+			<if test="contractCounts != null">
+				contractCounts = #{contractCounts,jdbcType=INTEGER},
+			</if>
+			<if test="finace != null">
+				finace = #{finace,jdbcType=VARCHAR},
+			</if>
+			<if test="finaceState != null">
+				finaceState = #{finaceState,jdbcType=VARCHAR},
+			</if>
+			<if test="principal != null">
+				principal = #{principal,jdbcType=VARCHAR},
+			</if>
+			<if test="principalManager != null">
+				principalManager = #{principalManager,jdbcType=VARCHAR},
+			</if>
+			<if test="principalState != null">
+				principalState = #{principalState,jdbcType=VARCHAR},
+			</if>
+			<if test="releaseOnline != null">
+				releaseOnline = #{releaseOnline,jdbcType=VARCHAR},
+			</if>
+			<if test="releaseManager != null">
+				releaseManager = #{releaseManager,jdbcType=VARCHAR},
+			</if>
+			<if test="releaseState != null">
+				releaseState = #{releaseState,jdbcType=VARCHAR},
+			</if>
+			<if test="trackingSplits != null">
+				trackingSplits = #{trackingSplits,jdbcType=VARCHAR},
+			</if>
+			<if test="payManager != null">
+				payManager = #{payManager,jdbcType=VARCHAR},
+			</if>
+			<if test="counts != null">
+				counts = #{counts,jdbcType=INTEGER},
+			</if>
+		</set>
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+	<delete id="delByProjId" parameterType="java.lang.String">
+	delete from im_tm_project_specific where projId = #{projId,jdbcType=VARCHAR}
+	</delete>
+</mapper>

@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.allmsi.mis.dao.ProjectLssuedMapper" >
+  <resultMap id="BaseResultMap" type="com.allmsi.mis.model.po.ProjectLssued" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="issuedId" property="issuedId" jdbcType="VARCHAR" />
+    <result column="actualRating" property="actualRating" jdbcType="VARCHAR" />
+    <result column="onlineTime" property="onlineTime" jdbcType="TIMESTAMP" />
+    <result column="deviationOf" property="deviationOf" jdbcType="VARCHAR" />
+    <result column="projId" property="projId" jdbcType="VARCHAR" />
+    <result column="cTime" property="cTime" jdbcType="TIMESTAMP" />
+    <result column="cUserId" property="cUserId" jdbcType="VARCHAR" />
+    <result column="uTime" property="uTime" jdbcType="TIMESTAMP" />
+    <result column="uUserId" property="uUserId" jdbcType="VARCHAR" />
+    <result column="del" property="del" jdbcType="INTEGER" />
+    <result column="subaccountDate" property="subaccountDate" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, issuedId, actualRating, onlineTime, deviationOf, projId, cTime, cUserId, uTime, 
+    uUserId, del,subaccountDate
+  </sql>
+  <sql id="Simple_Column_List">
+		m.id, m.issuedId,d.pName as issuedName, m.actualRating, m.onlineTime,
+		m.deviationOf,
+		m.projId, m.cTime, m.cUserId, m.uTime,
+		m.uUserId, m.del,m.subaccountDate
+	</sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from im_tm_project_issued
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByProjId" parameterType="java.lang.String"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Simple_Column_List" />
+		from im_tm_project_issued m left join im_tm_platform d on m.issuedId
+		=
+		d.id and d.del = 0
+		where m.del = 0 and m.projId =
+		#{projId,jdbcType=VARCHAR}
+		order by d.pSort
+	</select>
+  <update id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    update im_tm_project_issued set del = 1,uTime = now()
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <insert id="insert" parameterType="com.allmsi.mis.model.po.ProjectLssued" >
+    insert into im_tm_project_issued (id, issuedId, actualRating, 
+      onlineTime, deviationOf, projId, 
+      cTime, cUserId, uTime, 
+      uUserId, del)
+    values (#{id,jdbcType=VARCHAR}, #{issuedId,jdbcType=VARCHAR}, #{actualRating,jdbcType=VARCHAR}, 
+      #{onlineTime,jdbcType=TIMESTAMP}, #{deviationOf,jdbcType=VARCHAR}, #{projId,jdbcType=VARCHAR}, 
+      #{cTime,jdbcType=TIMESTAMP}, #{cUserId,jdbcType=VARCHAR}, #{uTime,jdbcType=TIMESTAMP}, 
+      #{uUserId,jdbcType=VARCHAR}, #{del,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.allmsi.mis.model.po.ProjectLssued" >
+    insert into im_tm_project_issued
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="issuedId != null" >
+        issuedId,
+      </if>
+      <if test="actualRating != null" >
+        actualRating,
+      </if>
+      <if test="onlineTime != null" >
+        onlineTime,
+      </if>
+      <if test="deviationOf != null" >
+        deviationOf,
+      </if>
+      <if test="projId != null" >
+        projId,
+      </if>
+      <if test="cUserId != null" >
+        cUserId,
+      </if>
+      <if test="uTime != null" >
+        uTime,
+      </if>
+      <if test="uUserId != null" >
+        uUserId,
+      </if>
+       <if test="uUserId != null" >
+        uUserId,
+      </if>
+       <if test="subaccountDate != null" >
+        subaccountDate,
+      </if>
+        cTime,del
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="issuedId != null" >
+        #{issuedId,jdbcType=VARCHAR},
+      </if>
+      <if test="actualRating != null" >
+        #{actualRating,jdbcType=VARCHAR},
+      </if>
+      <if test="onlineTime != null" >
+        #{onlineTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deviationOf != null" >
+        #{deviationOf,jdbcType=VARCHAR},
+      </if>
+      <if test="projId != null" >
+        #{projId,jdbcType=VARCHAR},
+      </if>
+      <if test="cUserId != null" >
+        #{cUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="uTime != null" >
+        #{uTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="uUserId != null" >
+        #{uUserId,jdbcType=VARCHAR},
+      </if>
+       <if test="subaccountDate != null" >
+        #{subaccountDate,jdbcType=VARCHAR},
+      </if>
+      now(),0
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.allmsi.mis.model.po.ProjectLssued" >
+    update im_tm_project_issued
+    <set >
+      <if test="issuedId != null" >
+        issuedId = #{issuedId,jdbcType=VARCHAR},
+      </if>
+      <if test="actualRating != null" >
+        actualRating = #{actualRating,jdbcType=VARCHAR},
+      </if>
+      <if test="onlineTime != null" >
+        onlineTime = #{onlineTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deviationOf != null" >
+        deviationOf = #{deviationOf,jdbcType=VARCHAR},
+      </if>
+      <if test="projId != null" >
+        proId = #{projId,jdbcType=VARCHAR},
+      </if>
+      <if test="cTime != null" >
+        cTime = #{cTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="cUserId != null" >
+        cUserId = #{cUserId,jdbcType=VARCHAR},
+      </if>
+        uTime = now(),
+      <if test="uUserId != null" >
+        uUserId = #{uUserId,jdbcType=VARCHAR},
+      </if>
+      <if test="del != null" >
+        del = #{del,jdbcType=INTEGER},
+      </if>
+       <if test="subaccountDate != null" >
+        #{subaccountDate,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.allmsi.mis.model.po.ProjectLssued" >
+    update im_tm_project_issued
+    set issuedId = #{issuedId,jdbcType=VARCHAR},
+      actualRating = #{actualRating,jdbcType=VARCHAR},
+      onlineTime = #{onlineTime,jdbcType=TIMESTAMP},
+      deviationOf = #{deviationOf,jdbcType=VARCHAR},
+      projId = #{projId,jdbcType=VARCHAR},
+      cTime = #{cTime,jdbcType=TIMESTAMP},
+      cUserId = #{cUserId,jdbcType=VARCHAR},
+      uTime = #{uTime,jdbcType=TIMESTAMP},
+      uUserId = #{uUserId,jdbcType=VARCHAR},
+      del = #{del,jdbcType=INTEGER}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.allmsi.mis.dao.DataUserMapper">
+	<resultMap id="BaseResultMap"
+		type="com.allmsi.mis.model.po.DataUser">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="objId" property="objId" jdbcType="VARCHAR" />
+		<result column="userId" property="userId" jdbcType="VARCHAR" />
+		<result column="time" property="time" jdbcType="TIMESTAMP" />
+		<result column="type" property="type" jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, objId, userId, time, type
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from im_tc_data_user
+		where id = #{id,jdbcType=VARCHAR}
+	</select>
+	<insert id="insertBatch" parameterType="java.util.List">
+		insert into im_tc_data_user(id, objId, userId, time, type)
+		values
+		<foreach collection="list" item="item" index="index"
+			separator=",">
+			(#{item.id}, #{item.objId},
+			#{item.userId},now(),#{item.type})
+		</foreach>
+	</insert>
+</mapper>

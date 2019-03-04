@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.allmsi.mis.dao.PlatformSplitMapper">
+	<resultMap id="BaseResultMap"
+		type="com.allmsi.mis.model.po.PlatformSplit">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="platform" property="platform"
+			jdbcType="VARCHAR" />
+		<result column="subaccountDate" property="subaccountDate"
+			jdbcType="TIMESTAMP" />
+		<result column="amount" property="amount" jdbcType="INTEGER" />
+		<result column="note" property="note" jdbcType="VARCHAR" />
+		<result column="cTime" property="cTime" jdbcType="TIMESTAMP" />
+		<result column="uTime" property="uTime" jdbcType="TIMESTAMP" />
+		<result column="del" property="del" jdbcType="INTEGER" />
+		<result column="issuedId" property="issuedId"
+			jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		ps.id, ps.platform,p.pName as platformName, ps.subaccountDate, ps.amount, ps.note, 
+		ps.cTime, ps.uTime, ps.del,ps.issuedId
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from im_tm_platform_split ps left join im_tm_platform p on ps.platform
+		= p.id and p.del = 0
+		where ps.id = #{id,jdbcType=VARCHAR} and ps.del = 0 
+	</select>
+	<select id="selectList" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Base_Column_List" />
+		from im_tm_platform_split ps left join im_tm_platform p on ps.platform
+		= p.id and p.del = 0
+		where ps.del = 0 
+	</select>
+	<update id="deleteByPrimaryKey" parameterType="java.lang.String">
+		update im_tm_platform_split set del = 1,uTime = now()
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+	<insert id="insertSelective"
+		parameterType="com.allmsi.mis.model.po.PlatformSplit">
+		insert into im_tm_platform_split
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="platform != null">
+				platform,
+			</if>
+			<if test="subaccountDate != null">
+				subaccountDate,
+			</if>
+			<if test="amount != null">
+				amount,
+			</if>
+			<if test="note != null">
+				note,
+			</if>
+			<if test="uTime != null">
+				uTime,
+			</if>
+			<if test="issuedId != null">
+				issuedId,
+			</if>
+			del,cTime
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=VARCHAR},
+			</if>
+			<if test="platform != null">
+				#{platform,jdbcType=VARCHAR},
+			</if>
+			<if test="subaccountDate != null">
+				#{subaccountDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="amount != null">
+				#{amount,jdbcType=INTEGER},
+			</if>
+			<if test="note != null">
+				#{note,jdbcType=VARCHAR},
+			</if>
+			<if test="uTime != null">
+				#{uTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="issuedId != null">
+				#{issuedId,jdbcType=INTEGER},
+			</if>
+			0,now()
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.allmsi.mis.model.po.PlatformSplit">
+		update im_tm_platform_split
+		<set>
+			<if test="platform != null">
+				platform = #{platform,jdbcType=VARCHAR},
+			</if>
+			<if test="subaccountDate != null">
+				subaccountDate = #{subaccountDate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="amount != null">
+				amount = #{amount,jdbcType=INTEGER},
+			</if>
+			<if test="note != null">
+				note = #{note,jdbcType=VARCHAR},
+			</if>
+			<if test="cTime != null">
+				cTime = #{cTime,jdbcType=TIMESTAMP},
+			</if>
+				uTime = now(),
+			<if test="del != null">
+				del = #{del,jdbcType=INTEGER},
+			</if>
+			<if test="issuedId != null">
+				#{issuedId,jdbcType=INTEGER},
+			</if>
+		</set>
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+</mapper>

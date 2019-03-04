@@ -1,0 +1,484 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.allmsi.mis.dao.BusinessMapper">
+	<resultMap id="BaseResultMap"
+		type="com.allmsi.mis.model.po.Business">
+		<id column="id" property="id" jdbcType="VARCHAR" />
+		<result column="projName" property="projName"
+			jdbcType="VARCHAR" />
+		<result column="projId" property="projId" jdbcType="VARCHAR" />
+		<result column="projType" property="projType"
+			jdbcType="VARCHAR" />
+		<result column="projNo" property="projNo" jdbcType="VARCHAR" />
+		<result column="bizTime" property="bizTime" jdbcType="VARCHAR" />
+		<result column="bizUserId" property="bizUserId"
+			jdbcType="VARCHAR" />
+		<result column="bizUserName" property="bizUserName"
+			jdbcType="VARCHAR" />
+		<result column="bizUserDeptId" property="bizUserDeptId"
+			jdbcType="VARCHAR" />
+		<result column="bizUserDeptName" property="bizUserDeptName"
+			jdbcType="VARCHAR" />
+		<result column="promotionUserId" property="promotionUserId"
+			jdbcType="VARCHAR" />
+		<result column="promotionUserName" property="promotionUserName"
+			jdbcType="VARCHAR" />
+		<result column="releaseManagerId" property="releaseManagerId"
+			jdbcType="VARCHAR" />
+		<result column="releaseManagerName"
+			property="releaseManagerName" jdbcType="VARCHAR" />
+		<result column="recordSituation" property="recordSituation"
+			jdbcType="VARCHAR" />
+		<result column="estimatedRating" property="estimatedRating"
+			jdbcType="VARCHAR" />
+		<result column="promotionBudget" property="promotionBudget"
+			jdbcType="INTEGER" />
+		<result column="promotionDirection"
+			property="promotionDirection" jdbcType="VARCHAR" />
+		<result column="isProectTeam" property="isProectTeam"
+			jdbcType="INTEGER" />
+		<result column="note" property="note" jdbcType="VARCHAR" />
+		<result column="producedType" property="producedType"
+			jdbcType="VARCHAR" />
+		<result column="jointDetails" property="jointDetails"
+			jdbcType="VARCHAR" />
+		<result column="declareType" property="declareType"
+			jdbcType="VARCHAR" />
+		<result column="marketingType" property="marketingType"
+			jdbcType="VARCHAR" />
+		<result column="contentType" property="contentType"
+			jdbcType="VARCHAR" />
+		<result column="otherCategories" property="otherCategories"
+			jdbcType="VARCHAR" />
+		<result column="cTime" property="cTime" jdbcType="TIMESTAMP" />
+		<result column="cUserId" property="cUserId" jdbcType="VARCHAR" />
+		<result column="uTime" property="uTime" jdbcType="TIMESTAMP" />
+		<result column="uUserId" property="uUserId" jdbcType="VARCHAR" />
+		<result column="draft" property="draft" jdbcType="INTEGER" />
+		<result column="del" property="del" jdbcType="INTEGER" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, projName, projId, projType, projNo, bizTime, bizUserId,
+		bizUserName,
+		bizUserDeptId,
+		bizUserDeptName, promotionUserId,
+		promotionUserName, releaseManagerId,
+		releaseManagerName,
+		recordSituation, estimatedRating, promotionBudget, promotionDirection,
+		isProectTeam,
+		note, producedType, jointDetails, declareType,
+		marketingType,
+		contentType, otherCategories,
+		cTime, cUserId, uTime,
+		uUserId
+	</sql>
+	<sql id="Simple_Column_List">
+		b.id,
+		b.projName,b.estimatedRating, d.dName as
+		estimatedRatingName,
+		b.producedType,
+		e.dName as producedTypeName
+		,b.declareType,g.dName as
+		declareTypeName,b.marketingType,h.dName as
+		marketingTypeName,b.contentType,f.dName as
+		contentTypeName,
+		b.projType,i.dName as projTypeName,b.projId, b.projNo,
+		b.bizTime,
+		b.bizUserId,
+		b.bizUserName,
+		b.bizUserDeptId,b.cTime,
+		b.cUserId, b.uTime,
+		b.uUserId,b.note,b.jointDetails,
+		b.bizUserDeptName, b.promotionUserId,
+		b.promotionUserName,
+		b.releaseManagerId,
+		b.releaseManagerName,b.recordSituation,b.promotionBudget,
+		b.promotionDirection, b.isProectTeam
+	</sql>
+	<select id="draft" resultMap="BaseResultMap"
+		parameterType="java.util.Map">
+		select
+		a.id,a.projId,a.projName,a.bizUserDeptName,a.bizUserDeptId,a.cTime,du.userId,a.projType,
+		d.dName as projTypeName, a.declareType,e.dName as
+		producedTypeName,f.dName as declareTypeName
+		from im_tm_business a
+		LEFT
+		JOIN im_tc_data_user du on a.id = du.objId
+		LEFT JOIN im_tm_dict d on
+		a.projType = d.id and d.del = 0
+		LEFT JOIN im_tm_dict e on
+		a.producedType = e.id and e.del = 0
+		LEFT JOIN im_tm_dict f on
+		a.declareType = f.id and f.del = 0
+		where a.draft=0 and
+		a.del = 0 and
+		du.userId=#{cUserId,jdbcType=VARCHAR} and du.type='01'
+		<if test="search != null and search != ''">
+		and a.projName like CONCAT('%','${search}','%')
+		</if>
+		order by a.cTime desc
+	</select>
+	<select id="selectByProjId" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Simple_Column_List" />
+		from im_tm_business b
+		left join im_tm_dict d on b.estimatedRating =
+		d.id and d.del=0
+		left join
+		im_tm_dict e on e.id =b.producedType and
+		e.del=0
+		left join im_tm_dict f
+		on f.id = b.contentType and f.del=0
+		left
+		join im_tm_dict g on g.id =
+		b.declareType and g.del=0
+		left join
+		im_tm_dict h on h.id =
+		b.marketingType and h.del=0
+		left join
+		im_tm_dict i
+		on i.id =
+		b.projType and i.del = 0
+		where b.projId =
+		#{projId,jdbcType=VARCHAR} and b.del =
+		0
+		order by cTime
+	</select>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap"
+		parameterType="java.lang.String">
+		select
+		<include refid="Simple_Column_List" />
+		from im_tm_business b
+		left join im_tm_dict d on b.estimatedRating =
+		d.id and d.del=0
+		left join
+		im_tm_dict e on e.id =b.producedType and
+		e.del=0
+		left join im_tm_dict f
+		on f.id = b.contentType and f.del=0
+		left
+		join im_tm_dict g on g.id =
+		b.declareType and g.del=0
+		left join
+		im_tm_dict h on h.id =
+		b.marketingType and h.del=0
+		left join
+		im_tm_dict i
+		on i.id =
+		b.projType and i.del = 0
+		where b.del = 0 and b.id =
+		#{id,jdbcType=VARCHAR}
+		order by
+		b.cTime DESC
+	</select>
+	<insert id="insertSelective"
+		parameterType="com.allmsi.mis.model.po.Business">
+		insert into im_tm_business
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				id,
+			</if>
+			<if test="projName != null">
+				projName,
+			</if>
+			<if test="projId != null">
+				projId,
+			</if>
+			<if test="projType != null">
+				projType,
+			</if>
+			<if test="projNo != null">
+				projNo,
+			</if>
+			<if test="bizTime != null">
+				bizTime,
+			</if>
+			<if test="bizUserId != null">
+				bizUserId,
+			</if>
+			<if test="bizUserName != null">
+				bizUserName,
+			</if>
+			<if test="bizUserDeptId != null">
+				bizUserDeptId,
+			</if>
+			<if test="bizUserDeptName != null">
+				bizUserDeptName,
+			</if>
+			<if test="promotionUserId != null">
+				promotionUserId,
+			</if>
+			<if test="promotionUserName != null">
+				promotionUserName,
+			</if>
+			<if test="releaseManagerId != null">
+				releaseManagerId,
+			</if>
+			<if test="releaseManagerName != null">
+				releaseManagerName,
+			</if>
+			<if test="recordSituation != null">
+				recordSituation,
+			</if>
+			<if test="estimatedRating != null">
+				estimatedRating,
+			</if>
+			<if test="promotionBudget != null">
+				promotionBudget,
+			</if>
+			<if test="promotionDirection != null">
+				promotionDirection,
+			</if>
+			<if test="isProectTeam != null">
+				isProectTeam,
+			</if>
+			<if test="note != null">
+				note,
+			</if>
+			<if test="producedType != null">
+				producedType,
+			</if>
+			<if test="jointDetails != null">
+				jointDetails,
+			</if>
+			<if test="declareType != null">
+				declareType,
+			</if>
+			<if test="marketingType != null">
+				marketingType,
+			</if>
+			<if test="contentType != null">
+				contentType,
+			</if>
+			<if test="otherCategories != null">
+				otherCategories,
+			</if>
+			<if test="cUserId != null">
+				cUserId,
+			</if>
+			<if test="uTime != null">
+				uTime,
+			</if>
+			<if test="uUserId != null">
+				uUserId,
+			</if>
+			<if test="draft != null">
+				draft,
+			</if>
+			cTime,del
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=VARCHAR},
+			</if>
+			<if test="projName != null">
+				#{projName,jdbcType=VARCHAR},
+			</if>
+			<if test="projId != null">
+				#{projId,jdbcType=VARCHAR},
+			</if>
+			<if test="projType != null">
+				#{projType,jdbcType=VARCHAR},
+			</if>
+			<if test="projNo != null">
+				#{projNo,jdbcType=VARCHAR},
+			</if>
+			<if test="bizTime != null">
+				#{bizTime,jdbcType=VARCHAR},
+			</if>
+			<if test="bizUserId != null">
+				#{bizUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="bizUserName != null">
+				#{bizUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="bizUserDeptId != null">
+				#{bizUserDeptId,jdbcType=VARCHAR},
+			</if>
+			<if test="bizUserDeptName != null">
+				#{bizUserDeptName,jdbcType=VARCHAR},
+			</if>
+			<if test="promotionUserId != null">
+				#{promotionUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="promotionUserName != null">
+				#{promotionUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="releaseManagerId != null">
+				#{releaseManagerId,jdbcType=VARCHAR},
+			</if>
+			<if test="releaseManagerName != null">
+				#{releaseManagerName,jdbcType=VARCHAR},
+			</if>
+			<if test="recordSituation != null">
+				#{recordSituation,jdbcType=VARCHAR},
+			</if>
+			<if test="estimatedRating != null">
+				#{estimatedRating,jdbcType=VARCHAR},
+			</if>
+			<if test="promotionBudget != null">
+				#{promotionBudget,jdbcType=INTEGER},
+			</if>
+			<if test="promotionDirection != null">
+				#{promotionDirection,jdbcType=VARCHAR},
+			</if>
+			<if test="isProectTeam != null">
+				#{isProectTeam,jdbcType=INTEGER},
+			</if>
+			<if test="note != null">
+				#{note,jdbcType=VARCHAR},
+			</if>
+			<if test="producedType != null">
+				#{producedType,jdbcType=VARCHAR},
+			</if>
+			<if test="jointDetails != null">
+				#{jointDetails,jdbcType=VARCHAR},
+			</if>
+			<if test="declareType != null">
+				#{declareType,jdbcType=VARCHAR},
+			</if>
+			<if test="marketingType != null">
+				#{marketingType,jdbcType=VARCHAR},
+			</if>
+			<if test="contentType != null">
+				#{contentType,jdbcType=VARCHAR},
+			</if>
+			<if test="otherCategories != null">
+				#{otherCategories,jdbcType=VARCHAR},
+			</if>
+			<if test="cUserId != null">
+				#{cUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="uTime != null">
+				#{uTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="uUserId != null">
+				#{uUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="draft != null">
+				#{draft,jdbcType=VARCHAR},
+			</if>
+			now(),0
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective"
+		parameterType="com.allmsi.mis.model.po.Business">
+		update im_tm_business
+		<set>
+			<if test="projName != null">
+				projName = #{projName,jdbcType=VARCHAR},
+			</if>
+			<if test="projId != null">
+				projId = #{projId,jdbcType=VARCHAR},
+			</if>
+			<if test="projType != null">
+				projType = #{projType,jdbcType=VARCHAR},
+			</if>
+			<if test="projNo != null">
+				projNo = #{projNo,jdbcType=VARCHAR},
+			</if>
+			<if test="bizTime != null">
+				bizTime = #{bizTime,jdbcType=VARCHAR},
+			</if>
+			<if test="bizUserId != null">
+				bizUserId = #{bizUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="bizUserName != null">
+				bizUserName = #{bizUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="bizUserDeptId != null">
+				bizUserDeptId = #{bizUserDeptId,jdbcType=VARCHAR},
+			</if>
+			<if test="bizUserDeptName != null">
+				bizUserDeptName = #{bizUserDeptName,jdbcType=VARCHAR},
+			</if>
+			<if test="promotionUserId != null">
+				promotionUserId = #{promotionUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="promotionUserName != null">
+				promotionUserName =
+				#{promotionUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="releaseManagerId != null">
+				releaseManagerId = #{releaseManagerId,jdbcType=VARCHAR},
+			</if>
+			<if test="releaseManagerName != null">
+				releaseManagerName =
+				#{releaseManagerName,jdbcType=VARCHAR},
+			</if>
+			<if test="recordSituation != null">
+				recordSituation = #{recordSituation,jdbcType=VARCHAR},
+			</if>
+			<if test="estimatedRating != null">
+				estimatedRating = #{estimatedRating,jdbcType=VARCHAR},
+			</if>
+			<if test="promotionBudget != null">
+				promotionBudget = #{promotionBudget,jdbcType=INTEGER},
+			</if>
+			<if test="promotionDirection != null">
+				promotionDirection =
+				#{promotionDirection,jdbcType=VARCHAR},
+			</if>
+			<if test="isProectTeam != null">
+				isProectTeam = #{isProectTeam,jdbcType=INTEGER},
+			</if>
+			<if test="note != null">
+				note = #{note,jdbcType=VARCHAR},
+			</if>
+			<if test="producedType != null">
+				producedType = #{producedType,jdbcType=VARCHAR},
+			</if>
+			<if test="jointDetails != null">
+				jointDetails = #{jointDetails,jdbcType=VARCHAR},
+			</if>
+			<if test="declareType != null">
+				declareType = #{declareType,jdbcType=VARCHAR},
+			</if>
+			<if test="marketingType != null">
+				marketingType = #{marketingType,jdbcType=VARCHAR},
+			</if>
+			<if test="contentType != null">
+				contentType = #{contentType,jdbcType=VARCHAR},
+			</if>
+			<if test="otherCategories != null">
+				otherCategories = #{otherCategories,jdbcType=VARCHAR},
+			</if>
+			<if test="cTime != null">
+				cTime = #{cTime,jdbcType=TIMESTAMP},
+			</if>
+			<if test="cUserId != null">
+				cUserId = #{cUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="uUserId != null">
+				uUserId = #{uUserId,jdbcType=VARCHAR},
+			</if>
+			<if test="del != null">
+				del = #{del,jdbcType=INTEGER},
+			</if>
+			<if test="draft != null">
+				draft = #{draft,jdbcType=VARCHAR},
+			</if>
+			uTime = now()
+		</set>
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+	<update id="deleteByPrimaryKey" parameterType="java.lang.String">
+		update
+		im_tm_business set del =1 , uTime = now(),uUserId =
+		#{uUserId,jdbcType=VARCHAR}
+		where id = #{id,jdbcType=VARCHAR}
+	</update>
+	<select id="selectByIds" resultMap="BaseResultMap"
+		parameterType="java.util.List">
+		select id,bizUserId, bizUserName, bizUserDeptId, bizUserDeptName
+		from
+		im_tm_business
+		where id in
+		<foreach collection="list" item="item" index="index" open="("
+			close=")" separator=",">
+			#{item}
+		</foreach>
+		order by cTime desc
+	</select>
+</mapper>
